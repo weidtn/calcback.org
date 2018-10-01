@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2018-09-27 Do 18:15 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calcback</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nikolai Weidt" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Calcback</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7c13e70">1. What is this?</a></li>
+<li><a href="#org9f97320">2. Imports:</a></li>
+<li><a href="#org2777f14">3. Defining some variables:</a></li>
+<li><a href="#org1a0df52">4. Read .csv-file:</a></li>
+<li><a href="#org59f9250">5. Calculate \(\rho\)</a>
+<ul>
+<li><a href="#orge9a34b6">5.1. Create a matrix containing every possible refractive index (n+ik):</a></li>
+<li><a href="#orgf84f645">5.2. Calculate:</a></li>
+<li><a href="#org6ffeb9b">5.3. Compare calculated rho with given \(\Delta\) and \(\psi\):</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7c13e70" class="outline-2">
+<h2 id="org7c13e70"><span class="section-number-2">1</span> What is this?</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Im coding a programm to get the complex refractive index \(n = n * ik\) from the ellipsometric parameters \(\Delta\) and \(\Psi\) I got from a simulation.
+</p>
+</div>
+</div>
+<div id="outline-container-org9f97320" class="outline-2">
+<h2 id="org9f97320"><span class="section-number-2">2</span> Imports:</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #4f97d7; font-weight: bold; font-style: italic;">import</span> numpy <span style="color: #4f97d7; font-weight: bold; font-style: italic;">as</span> np
+<span style="color: #4f97d7; font-weight: bold; font-style: italic;">import</span> matplotlib
+<span style="color: #4f97d7; font-weight: bold; font-style: italic;">from</span> matplotlib <span style="color: #4f97d7; font-weight: bold; font-style: italic;">import</span> pyplot
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2777f14" class="outline-2">
+<h2 id="org2777f14"><span class="section-number-2">3</span> Defining some variables:</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Defining some variables for later use:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #7590db;">CSVFILE</span> = <span style="color: #2d9574;">"head300nmSiO2.csv"</span>
+<span style="color: #7590db;">phi_i</span> = <span style="color: #a45bad;">70</span> * np.pi / <span style="color: #a45bad;">180</span>
+<span style="color: #7590db;">d_L</span> = <span style="color: #a45bad;">300</span>
+<span style="color: #7590db;">n_air</span> = <span style="color: #a45bad;">1</span>
+<span style="color: #7590db;">rerange</span> = <span style="color: #a45bad;">5</span>
+<span style="color: #7590db;">imrange</span> = <span style="color: #a45bad;">5</span>
+<span style="color: #7590db;">i</span> = <span style="color: #a45bad;">0</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a0df52" class="outline-2">
+<h2 id="org1a0df52"><span class="section-number-2">4</span> Read .csv-file:</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,n<sub>S,k</sub><sub>S</sub>],&#x2026;] (Skip columns 3 and 4)
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #7590db;">csv</span> = np.loadtxt<span style="color: #4f97d7;">(</span>CSVFILE, usecols=<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">0</span>,<span style="color: #a45bad;">1</span>,<span style="color: #a45bad;">2</span>,<span style="color: #a45bad;">5</span>,<span style="color: #a45bad;">6</span><span style="color: #bc6ec5;">)</span>,  delimiter=<span style="color: #2d9574;">","</span>, skiprows=<span style="color: #a45bad;">1</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+The array looks like this:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #4f97d7; font-weight: bold; font-style: italic;">print</span><span style="color: #4f97d7;">(</span>csv<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+<pre class="example">
+[[300.          55.2217535   84.37228319   2.6726       3.0375    ]
+ [303.          50.11187439  93.3085011    2.7346       3.0381    ]
+ [306.          46.35824553  98.43681392   2.7967       3.0368    ]
+ [309.          43.50539341 101.18051798   2.8588       3.0334    ]
+ [312.          41.29392865 102.19236832   2.9206       3.0279    ]
+ [315.          39.48751217 101.93002      2.9822       3.0205    ]
+ [318.          37.90308303 100.64846104   3.0435       3.0109    ]
+ [321.          36.47640803  98.54577151   3.1042       2.9994    ]
+ [324.          35.12615859  95.72242205   3.1644       2.9858    ]]
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org59f9250" class="outline-2">
+<h2 id="org59f9250"><span class="section-number-2">5</span> Calculate \(\rho\)</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orge9a34b6" class="outline-3">
+<h3 id="orge9a34b6"><span class="section-number-3">5.1</span> Create a matrix containing every possible refractive index (n+ik):</h3>
+<div class="outline-text-3" id="text-5-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #7590db;">lsp_re</span> = np.linspace<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">0</span>.<span style="color: #a45bad;">1</span>, rerange, <span style="color: #a45bad;">101</span><span style="color: #4f97d7;">)</span>
+<span style="color: #7590db;">lsp_im</span> = np.linspace<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">0</span>.<span style="color: #a45bad;">1</span>, imrange, <span style="color: #a45bad;">101</span><span style="color: #4f97d7;">)</span>
+<span style="color: #7590db;">re</span>, <span style="color: #7590db;">im</span> = np.meshgrid <span style="color: #4f97d7;">(</span>lsp_re, lsp_im, copy=<span style="color: #a45bad;">False</span><span style="color: #4f97d7;">)</span>
+<span style="color: #7590db;">matrix</span> = <span style="color: #a45bad;">1j</span> * im + re
+</pre>
+</div>
+
+<p>
+This gives the following matrix:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #4f97d7; font-weight: bold; font-style: italic;">print</span><span style="color: #4f97d7;">(</span>matrix<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+[[0.1  +0.1j   0.149+0.1j   0.198+0.1j   ... 4.902+0.1j   4.951+0.1j
+  5.   +0.1j  ]
+ [0.1  +0.149j 0.149+0.149j 0.198+0.149j ... 4.902+0.149j 4.951+0.149j
+  5.   +0.149j]
+ [0.1  +0.198j 0.149+0.198j 0.198+0.198j ... 4.902+0.198j 4.951+0.198j
+  5.   +0.198j]
+ ...
+ [0.1  +4.902j 0.149+4.902j 0.198+4.902j ... 4.902+4.902j 4.951+4.902j
+  5.   +4.902j]
+ [0.1  +4.951j 0.149+4.951j 0.198+4.951j ... 4.902+4.951j 4.951+4.951j
+  5.   +4.951j]
+ [0.1  +5.j    0.149+5.j    0.198+5.j    ... 4.902+5.j    4.951+5.j
+  5.   +5.j   ]]
+</pre>
+</div>
+</div>
+<div id="outline-container-orgf84f645" class="outline-3">
+<h3 id="orgf84f645"><span class="section-number-3">5.2</span> Calculate:</h3>
+<div class="outline-text-3" id="text-5-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #7590db;">n_S</span> = <span style="color: #4f97d7;">(</span>csv<span style="color: #bc6ec5;">[</span>i,<span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span> + <span style="color: #a45bad;">1j</span>* csv<span style="color: #bc6ec5;">[</span>i,<span style="color: #a45bad;">4</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
+<span style="color: #7590db;">lambda_vac</span> = csv<span style="color: #4f97d7;">[</span>i,<span style="color: #a45bad;">0</span><span style="color: #4f97d7;">]</span>
+<span style="color: #4f97d7; font-weight: bold; font-style: italic;">for</span> n_L <span style="color: #4f97d7; font-weight: bold; font-style: italic;">in</span> matrix.flat:
+      <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Snell's Law:</span>
+      <span style="color: #7590db;">phi_L</span> = np.arcsin<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">(</span>np.sin<span style="color: #2d9574;">(</span>phi_i<span style="color: #2d9574;">)</span>*n_air<span style="color: #bc6ec5;">)</span>/ n_L<span style="color: #4f97d7;">)</span>
+      <span style="color: #7590db;">phi_S</span> = np.arcsin<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">(</span>np.sin<span style="color: #2d9574;">(</span>phi_L<span style="color: #2d9574;">)</span>*n_L<span style="color: #bc6ec5;">)</span>/ n_S<span style="color: #4f97d7;">)</span>
+      <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Fresnel equations:</span>
+      <span style="color: #2aa1ae; background-color: #292e34;">#</span>
+      <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">air/layer:</span>
+      <span style="color: #7590db;">rs_al</span> = <span style="color: #4f97d7;">(</span>n_air * np.cos<span style="color: #bc6ec5;">(</span>phi_i<span style="color: #bc6ec5;">)</span> - n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span>n_air * np.cos<span style="color: #bc6ec5;">(</span>phi_i<span style="color: #bc6ec5;">)</span> + n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+      <span style="color: #7590db;">rp_al</span> = <span style="color: #4f97d7;">(</span>n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_i<span style="color: #bc6ec5;">)</span> - n_air * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span>n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_i<span style="color: #bc6ec5;">)</span> + n_air * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+      <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">layer/substrate:</span>
+      <span style="color: #7590db;">rs_ls</span> = <span style="color: #4f97d7;">(</span>n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span> - n_S * np.cos<span style="color: #bc6ec5;">(</span>phi_S<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span>n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span> + n_S * np.cos<span style="color: #bc6ec5;">(</span>phi_S<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+      <span style="color: #7590db;">rp_ls</span> = <span style="color: #4f97d7;">(</span>n_S * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span> - n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_S<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span>n_S * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span> + n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_S<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+      <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Fujiwara:</span>
+      <span style="color: #7590db;">beta</span> = <span style="color: #a45bad;">2</span> * np.pi * d_L * n_L * np.cos<span style="color: #4f97d7;">(</span>phi_L<span style="color: #4f97d7;">)</span> / lambda_vac
+      <span style="color: #7590db;">rp_L</span> = <span style="color: #4f97d7;">(</span>rp_al + rp_ls * np.exp<span style="color: #bc6ec5;">(</span>-<span style="color: #a45bad;">2</span>*<span style="color: #a45bad;">1j</span>*beta<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> + rp_al * rp_ls * np.exp<span style="color: #bc6ec5;">(</span>-<span style="color: #a45bad;">2</span> * <span style="color: #a45bad;">1j</span> * beta<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> 
+      <span style="color: #7590db;">rs_L</span> = <span style="color: #4f97d7;">(</span>rs_al + rs_ls * np.exp<span style="color: #bc6ec5;">(</span>-<span style="color: #a45bad;">2</span>*<span style="color: #a45bad;">1j</span>*beta<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span> <span style="color: #a45bad;">1</span> + rs_al * rs_ls * np.exp<span style="color: #bc6ec5;">(</span>-<span style="color: #a45bad;">2</span> * <span style="color: #a45bad;">1j</span> * beta<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>   
+      <span style="color: #7590db;">rho</span> = rp_L / rs_L
+</pre>
+</div>
+
+
+<pre class="example">
+for n_L =  (5+5j)
+at lambda =  300.0
+phi_L (0.09369049752311029-0.0942436309601521j)
+phi_S (0.1516718935900151-0.1754940397472108j)
+rs_al (-0.9322788656900732-0.06447800755339925j)
+rp_al (0.47076999129408226+0.32915273622391117j)
+rs_ls (0.2706645644366405-0.037805743704596925j)
+rp_ls (-0.27413124901624036+0.021323198111731292j)
+beta (31.139752412112067+31.69455000949363j)
+rp_L (1.426723122645158-0.9975355870956931j)
+rs_L (-1.067534044700266+0.07383248803644696j)
+rho (-1.3944229215529675+0.8379890813445299j)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org6ffeb9b" class="outline-3">
+<h3 id="org6ffeb9b"><span class="section-number-3">5.3</span> Compare calculated rho with given \(\Delta\) and \(\psi\):</h3>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nikolai Weidt</p>
+<p class="date">Created: 2018-09-27 Do 18:15</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+% Created 2018-09-25 Di 22:18
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\author{Nikolai Weidt}
+\date{\today}
+\title{Calcback Debug}
+\hypersetup{
+ pdfauthor={Nikolai Weidt},
+ pdftitle={Calcback Debug},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.1 (Org mode 9.1.14)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+
+\section{What is this?}
+\label{sec:org780831c}
+Im coding a programm to get the complex refractive index \(n = n * ik\) from the ellipsometric parameters \(\Delta\) and \(\Psi\) I got from a simulation.
+\section{Imports:}
+\label{sec:orgbf785b2}
+\begin{verbatim}
+import numpy as np
+import matplotlib
+from matplotlib import pyplot
+\end{verbatim}
+
+\section{Defining some variables:}
+\label{sec:org04ef2e2}
+Defining some variables for later use:
+
+\begin{verbatim}
+CSVFILE = "300nmSiO2.csv"
+phi_i = 70 * np.pi / 180
+d_L = 300
+n_air = 1
+rerange = 5
+imrange = 5
+\end{verbatim}
+
+\section{Read .csv-file:}
+\label{sec:org3476096}
+Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,T,R,n\(_{\text{S,k}}\)\(_{\text{S}}\)],[],[]\ldots{}]
+
+\begin{verbatim}
+csv = np.loadtxt(CSVFILE, delimiter=",", skiprows=1)
+\end{verbatim}
+
+\begin{verbatim}
+[[3.00000000e+02 5.52217535e+01 8.43722832e+01 ... 2.23744631e-01
+  2.67260000e+00 3.03750000e+00]
+ [3.03000000e+02 5.01118744e+01 9.33085011e+01 ... 3.19674321e-01
+  2.73460000e+00 3.03810000e+00]
+ [3.06000000e+02 4.63582455e+01 9.84368139e+01 ... 4.08053172e-01
+  2.79670000e+00 3.03680000e+00]
+ ...
+ [2.39400000e+03 3.10615656e+01 1.04467643e+02 ... 4.27263440e-01
+  3.40030000e+00 0.00000000e+00]
+ [2.39700000e+03 3.10226710e+01 1.04442500e+02 ... 4.27940008e-01
+  3.40020000e+00 0.00000000e+00]
+ [2.40000000e+03 3.09839244e+01 1.04417327e+02 ... 4.28613566e-01
+  3.40010000e+00 0.00000000e+00]]
+\end{verbatim}
+
+\section{Calculate \(\rho\)}
+\label{sec:org10139ac}
+\subsection{Create a matrix containing every possible refractive index (n+ik):}
+\label{sec:org0ab67dd}
+\begin{verbatim}
+lsp_re = np.linspace(0.1, rerange, 1001)
+lsp_im = np.linspace(0.1, imrange, 1001)
+re, im = np.meshgrid (lsp_re, lsp_im, copy=False)
+matrix = 1j * im + re
+\end{verbatim}
+
+\begin{verbatim}
+print(matrix)
+\end{verbatim}
+
+\begin{verbatim}
+[[0.1   +0.1j    0.1049+0.1j    0.1098+0.1j    ... 4.9902+0.1j
+  4.9951+0.1j    5.    +0.1j   ]
+ [0.1   +0.1049j 0.1049+0.1049j 0.1098+0.1049j ... 4.9902+0.1049j
+  4.9951+0.1049j 5.    +0.1049j]
+ [0.1   +0.1098j 0.1049+0.1098j 0.1098+0.1098j ... 4.9902+0.1098j
+  4.9951+0.1098j 5.    +0.1098j]
+ ...
+ [0.1   +4.9902j 0.1049+4.9902j 0.1098+4.9902j ... 4.9902+4.9902j
+  4.9951+4.9902j 5.    +4.9902j]
+ [0.1   +4.9951j 0.1049+4.9951j 0.1098+4.9951j ... 4.9902+4.9951j
+  4.9951+4.9951j 5.    +4.9951j]
+ [0.1   +5.j     0.1049+5.j     0.1098+5.j     ... 4.9902+5.j
+  4.9951+5.j     5.    +5.j    ]]
+\end{verbatim}
+\subsection{Snell's Law:}
+\label{sec:org58f36ce}
+\begin{verbatim}
+phi_L = np.arcsin(np.sin(phi_i)*n_air)/ n_L) 
+phi_L = np.arcsin(np.sin(phi_L)*n_L)/ n_S) 
+\end{verbatim}
+
+\subsection{Fresnel Equations:}
+\label{sec:org890aceb}
+\subsection{Calculate rho (Fujiwara):}
+\label{sec:org91b0e2e}
+\end{document}
