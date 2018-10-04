@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-09-27 Do 18:15 -->
+<!-- 2018-10-04 Do 19:38 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Calcback</title>
@@ -256,78 +256,79 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7c13e70">1. What is this?</a></li>
-<li><a href="#org9f97320">2. Imports:</a></li>
-<li><a href="#org2777f14">3. Defining some variables:</a></li>
-<li><a href="#org1a0df52">4. Read .csv-file:</a></li>
-<li><a href="#org59f9250">5. Calculate \(\rho\)</a>
+<li><a href="#org2700a6f">1. What is this?</a></li>
+<li><a href="#org4548a0d">2. Imports:</a></li>
+<li><a href="#orge2fe338">3. Defining some variables:</a></li>
+<li><a href="#orgc0fff37">4. Read .csv-file:</a></li>
+<li><a href="#orga232311">5. Calculate \(\rho\)</a>
 <ul>
-<li><a href="#orge9a34b6">5.1. Create a matrix containing every possible refractive index (n+ik):</a></li>
-<li><a href="#orgf84f645">5.2. Calculate:</a></li>
-<li><a href="#org6ffeb9b">5.3. Compare calculated rho with given \(\Delta\) and \(\psi\):</a></li>
+<li><a href="#orgcca01a9">5.1. Create a matrix containing every possible refractive index (n+ik):</a></li>
+<li><a href="#org943f47b">5.2. Calculate:</a></li>
+<li><a href="#orgcc6c9ef">5.3. Compare calculated rho with given \(\Delta\) and \(\psi\):</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org7c13e70" class="outline-2">
-<h2 id="org7c13e70"><span class="section-number-2">1</span> What is this?</h2>
+<div id="outline-container-org2700a6f" class="outline-2">
+<h2 id="org2700a6f"><span class="section-number-2">1</span> What is this?</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-Im coding a programm to get the complex refractive index \(n = n * ik\) from the ellipsometric parameters \(\Delta\) and \(\Psi\) I got from a simulation.
+I'm coding a program to get the complex refractive index \(n = n * ik\) from the ellipsometric parameters \(\Delta\) and \(\Psi\) I got from a simulation.
 </p>
 </div>
 </div>
-<div id="outline-container-org9f97320" class="outline-2">
-<h2 id="org9f97320"><span class="section-number-2">2</span> Imports:</h2>
+<div id="outline-container-org4548a0d" class="outline-2">
+<h2 id="org4548a0d"><span class="section-number-2">2</span> Imports:</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #4f97d7; font-weight: bold; font-style: italic;">import</span> numpy <span style="color: #4f97d7; font-weight: bold; font-style: italic;">as</span> np
-<span style="color: #4f97d7; font-weight: bold; font-style: italic;">import</span> matplotlib
-<span style="color: #4f97d7; font-weight: bold; font-style: italic;">from</span> matplotlib <span style="color: #4f97d7; font-weight: bold; font-style: italic;">import</span> pyplot
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">import</span> numpy <span style="color: #F0DFAF; font-weight: bold;">as</span> np
+<span style="color: #F0DFAF; font-weight: bold;">import</span> matplotlib
+<span style="color: #F0DFAF; font-weight: bold;">from</span> matplotlib <span style="color: #F0DFAF; font-weight: bold;">import</span> pyplot
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org2777f14" class="outline-2">
-<h2 id="org2777f14"><span class="section-number-2">3</span> Defining some variables:</h2>
+<div id="outline-container-orge2fe338" class="outline-2">
+<h2 id="orge2fe338"><span class="section-number-2">3</span> Defining some variables:</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Defining some variables for later use:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #7590db;">CSVFILE</span> = <span style="color: #2d9574;">"head300nmSiO2.csv"</span>
-<span style="color: #7590db;">phi_i</span> = <span style="color: #a45bad;">70</span> * np.pi / <span style="color: #a45bad;">180</span>
-<span style="color: #7590db;">d_L</span> = <span style="color: #a45bad;">300</span>
-<span style="color: #7590db;">n_air</span> = <span style="color: #a45bad;">1</span>
-<span style="color: #7590db;">rerange</span> = <span style="color: #a45bad;">5</span>
-<span style="color: #7590db;">imrange</span> = <span style="color: #a45bad;">5</span>
-<span style="color: #7590db;">i</span> = <span style="color: #a45bad;">0</span>
+<pre class="src src-python"><span style="color: #DFAF8F;">CSVFILE</span> = <span style="color: #CC9393;">"head300nmSiO2.csv"</span>
+<span style="color: #DFAF8F;">phi_i</span> = <span style="color: #BFEBBF;">70</span> * np.pi / <span style="color: #BFEBBF;">180</span>
+<span style="color: #DFAF8F;">d_L</span> = <span style="color: #BFEBBF;">300</span>
+<span style="color: #DFAF8F;">n_air</span> = <span style="color: #BFEBBF;">1</span>
+<span style="color: #DFAF8F;">rerange</span> = <span style="color: #BFEBBF;">5</span>
+<span style="color: #DFAF8F;">imrange</span> = <span style="color: #BFEBBF;">5</span>
+<span style="color: #DFAF8F;">i</span> = <span style="color: #BFEBBF;">0</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org1a0df52" class="outline-2">
-<h2 id="org1a0df52"><span class="section-number-2">4</span> Read .csv-file:</h2>
+<div id="outline-container-orgc0fff37" class="outline-2">
+<h2 id="orgc0fff37"><span class="section-number-2">4</span> Read .csv-file:</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,n<sub>S,k</sub><sub>S</sub>],&#x2026;] (Skip columns 3 and 4)
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #7590db;">csv</span> = np.loadtxt<span style="color: #4f97d7;">(</span>CSVFILE, usecols=<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">0</span>,<span style="color: #a45bad;">1</span>,<span style="color: #a45bad;">2</span>,<span style="color: #a45bad;">5</span>,<span style="color: #a45bad;">6</span><span style="color: #bc6ec5;">)</span>,  delimiter=<span style="color: #2d9574;">","</span>, skiprows=<span style="color: #a45bad;">1</span><span style="color: #4f97d7;">)</span>
+<pre class="src src-python"><span style="color: #DFAF8F;">csv</span> = np.loadtxt<span style="color: #DCDCCC;">(</span>CSVFILE, usecols=<span style="color: #BFEBBF;">(</span><span style="color: #BFEBBF;">0</span>,<span style="color: #BFEBBF;">1</span>,<span style="color: #BFEBBF;">2</span>,<span style="color: #BFEBBF;">5</span>,<span style="color: #BFEBBF;">6</span><span style="color: #BFEBBF;">)</span>,  delimiter=<span style="color: #CC9393;">","</span>, skiprows=<span style="color: #BFEBBF;">1</span><span style="color: #DCDCCC;">)</span>
 </pre>
 </div>
 
 <p>
+:DEBUG:
 The array looks like this:
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #4f97d7; font-weight: bold; font-style: italic;">print</span><span style="color: #4f97d7;">(</span>csv<span style="color: #4f97d7;">)</span>
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">print</span><span style="color: #DCDCCC;">(</span>csv<span style="color: #DCDCCC;">)</span>
 </pre>
 </div>
 <pre class="example">
@@ -345,18 +346,18 @@ The array looks like this:
 </div>
 </div>
 
-<div id="outline-container-org59f9250" class="outline-2">
-<h2 id="org59f9250"><span class="section-number-2">5</span> Calculate \(\rho\)</h2>
+<div id="outline-container-orga232311" class="outline-2">
+<h2 id="orga232311"><span class="section-number-2">5</span> Calculate \(\rho\)</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-orge9a34b6" class="outline-3">
-<h3 id="orge9a34b6"><span class="section-number-3">5.1</span> Create a matrix containing every possible refractive index (n+ik):</h3>
+<div id="outline-container-orgcca01a9" class="outline-3">
+<h3 id="orgcca01a9"><span class="section-number-3">5.1</span> Create a matrix containing every possible refractive index (n+ik):</h3>
 <div class="outline-text-3" id="text-5-1">
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #7590db;">lsp_re</span> = np.linspace<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">0</span>.<span style="color: #a45bad;">1</span>, rerange, <span style="color: #a45bad;">101</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">lsp_im</span> = np.linspace<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">0</span>.<span style="color: #a45bad;">1</span>, imrange, <span style="color: #a45bad;">101</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">re</span>, <span style="color: #7590db;">im</span> = np.meshgrid <span style="color: #4f97d7;">(</span>lsp_re, lsp_im, copy=<span style="color: #a45bad;">False</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">matrix</span> = <span style="color: #a45bad;">1j</span> * im + re
+<pre class="src src-python"><span style="color: #DFAF8F;">lsp_re</span> = np.linspace<span style="color: #DCDCCC;">(</span><span style="color: #BFEBBF;">0</span>.<span style="color: #BFEBBF;">1</span>, rerange, <span style="color: #BFEBBF;">101</span><span style="color: #DCDCCC;">)</span>
+<span style="color: #DFAF8F;">lsp_im</span> = np.linspace<span style="color: #DCDCCC;">(</span><span style="color: #BFEBBF;">0</span>.<span style="color: #BFEBBF;">1</span>, imrange, <span style="color: #BFEBBF;">101</span><span style="color: #DCDCCC;">)</span>
+<span style="color: #DFAF8F;">re</span>, <span style="color: #DFAF8F;">im</span> = np.meshgrid <span style="color: #DCDCCC;">(</span>lsp_re, lsp_im, copy=<span style="color: #BFEBBF;">False</span><span style="color: #DCDCCC;">)</span>
+<span style="color: #DFAF8F;">matrix</span> = <span style="color: #BFEBBF;">1j</span> * im + re
 </pre>
 </div>
 
@@ -364,7 +365,7 @@ The array looks like this:
 This gives the following matrix:
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #4f97d7; font-weight: bold; font-style: italic;">print</span><span style="color: #4f97d7;">(</span>matrix<span style="color: #4f97d7;">)</span>
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">print</span><span style="color: #DCDCCC;">(</span>matrix<span style="color: #DCDCCC;">)</span>
 </pre>
 </div>
 
@@ -385,29 +386,31 @@ This gives the following matrix:
 </pre>
 </div>
 </div>
-<div id="outline-container-orgf84f645" class="outline-3">
-<h3 id="orgf84f645"><span class="section-number-3">5.2</span> Calculate:</h3>
+<div id="outline-container-org943f47b" class="outline-3">
+<h3 id="org943f47b"><span class="section-number-3">5.2</span> Calculate:</h3>
 <div class="outline-text-3" id="text-5-2">
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #7590db;">n_S</span> = <span style="color: #4f97d7;">(</span>csv<span style="color: #bc6ec5;">[</span>i,<span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span> + <span style="color: #a45bad;">1j</span>* csv<span style="color: #bc6ec5;">[</span>i,<span style="color: #a45bad;">4</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">lambda_vac</span> = csv<span style="color: #4f97d7;">[</span>i,<span style="color: #a45bad;">0</span><span style="color: #4f97d7;">]</span>
-<span style="color: #4f97d7; font-weight: bold; font-style: italic;">for</span> n_L <span style="color: #4f97d7; font-weight: bold; font-style: italic;">in</span> matrix.flat:
-      <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Snell's Law:</span>
-      <span style="color: #7590db;">phi_L</span> = np.arcsin<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">(</span>np.sin<span style="color: #2d9574;">(</span>phi_i<span style="color: #2d9574;">)</span>*n_air<span style="color: #bc6ec5;">)</span>/ n_L<span style="color: #4f97d7;">)</span>
-      <span style="color: #7590db;">phi_S</span> = np.arcsin<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">(</span>np.sin<span style="color: #2d9574;">(</span>phi_L<span style="color: #2d9574;">)</span>*n_L<span style="color: #bc6ec5;">)</span>/ n_S<span style="color: #4f97d7;">)</span>
-      <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Fresnel equations:</span>
-      <span style="color: #2aa1ae; background-color: #292e34;">#</span>
-      <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">air/layer:</span>
-      <span style="color: #7590db;">rs_al</span> = <span style="color: #4f97d7;">(</span>n_air * np.cos<span style="color: #bc6ec5;">(</span>phi_i<span style="color: #bc6ec5;">)</span> - n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span>n_air * np.cos<span style="color: #bc6ec5;">(</span>phi_i<span style="color: #bc6ec5;">)</span> + n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-      <span style="color: #7590db;">rp_al</span> = <span style="color: #4f97d7;">(</span>n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_i<span style="color: #bc6ec5;">)</span> - n_air * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span>n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_i<span style="color: #bc6ec5;">)</span> + n_air * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-      <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">layer/substrate:</span>
-      <span style="color: #7590db;">rs_ls</span> = <span style="color: #4f97d7;">(</span>n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span> - n_S * np.cos<span style="color: #bc6ec5;">(</span>phi_S<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span>n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span> + n_S * np.cos<span style="color: #bc6ec5;">(</span>phi_S<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-      <span style="color: #7590db;">rp_ls</span> = <span style="color: #4f97d7;">(</span>n_S * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span> - n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_S<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span>n_S * np.cos<span style="color: #bc6ec5;">(</span>phi_L<span style="color: #bc6ec5;">)</span> + n_L * np.cos<span style="color: #bc6ec5;">(</span>phi_S<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-      <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Fujiwara:</span>
-      <span style="color: #7590db;">beta</span> = <span style="color: #a45bad;">2</span> * np.pi * d_L * n_L * np.cos<span style="color: #4f97d7;">(</span>phi_L<span style="color: #4f97d7;">)</span> / lambda_vac
-      <span style="color: #7590db;">rp_L</span> = <span style="color: #4f97d7;">(</span>rp_al + rp_ls * np.exp<span style="color: #bc6ec5;">(</span>-<span style="color: #a45bad;">2</span>*<span style="color: #a45bad;">1j</span>*beta<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> + rp_al * rp_ls * np.exp<span style="color: #bc6ec5;">(</span>-<span style="color: #a45bad;">2</span> * <span style="color: #a45bad;">1j</span> * beta<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> 
-      <span style="color: #7590db;">rs_L</span> = <span style="color: #4f97d7;">(</span>rs_al + rs_ls * np.exp<span style="color: #bc6ec5;">(</span>-<span style="color: #a45bad;">2</span>*<span style="color: #a45bad;">1j</span>*beta<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> / <span style="color: #4f97d7;">(</span> <span style="color: #a45bad;">1</span> + rs_al * rs_ls * np.exp<span style="color: #bc6ec5;">(</span>-<span style="color: #a45bad;">2</span> * <span style="color: #a45bad;">1j</span> * beta<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>   
-      <span style="color: #7590db;">rho</span> = rp_L / rs_L
+<pre class="src src-python"><span style="color: #DFAF8F;">n_S</span> = <span style="color: #DCDCCC;">(</span>csv<span style="color: #BFEBBF;">[</span>i,<span style="color: #BFEBBF;">3</span><span style="color: #BFEBBF;">]</span> + <span style="color: #BFEBBF;">1j</span>* csv<span style="color: #BFEBBF;">[</span>i,<span style="color: #BFEBBF;">4</span><span style="color: #BFEBBF;">]</span><span style="color: #DCDCCC;">)</span>
+<span style="color: #DFAF8F;">lambda_vac</span> = csv<span style="color: #DCDCCC;">[</span>i,<span style="color: #BFEBBF;">0</span><span style="color: #DCDCCC;">]</span>
+<span style="color: #F0DFAF; font-weight: bold;">for</span> n_L <span style="color: #F0DFAF; font-weight: bold;">in</span> matrix.flat:
+      <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Snell's Law:</span>
+      <span style="color: #DFAF8F;">phi_L</span> = np.arcsin<span style="color: #DCDCCC;">(</span><span style="color: #BFEBBF;">(</span>np.sin<span style="color: #D0BF8F;">(</span>phi_i<span style="color: #D0BF8F;">)</span>*n_air<span style="color: #BFEBBF;">)</span>/ n_L<span style="color: #DCDCCC;">)</span>
+      <span style="color: #DFAF8F;">phi_S</span> = np.arcsin<span style="color: #DCDCCC;">(</span><span style="color: #BFEBBF;">(</span>np.sin<span style="color: #D0BF8F;">(</span>phi_L<span style="color: #D0BF8F;">)</span>*n_L<span style="color: #BFEBBF;">)</span>/ n_S<span style="color: #DCDCCC;">)</span>
+      <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Fresnel equations:</span>
+      <span style="color: #5F7F5F;">#</span>
+      <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">air/layer:</span>
+      <span style="color: #DFAF8F;">rs_al</span> = <span style="color: #DCDCCC;">(</span>n_air * np.cos<span style="color: #BFEBBF;">(</span>phi_i<span style="color: #BFEBBF;">)</span> - n_L * np.cos<span style="color: #BFEBBF;">(</span>phi_L<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span> / <span style="color: #DCDCCC;">(</span>n_air * np.cos<span style="color: #BFEBBF;">(</span>phi_i<span style="color: #BFEBBF;">)</span> + n_L * np.cos<span style="color: #BFEBBF;">(</span>phi_L<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span>
+      <span style="color: #DFAF8F;">rp_al</span> = <span style="color: #DCDCCC;">(</span>n_L * np.cos<span style="color: #BFEBBF;">(</span>phi_i<span style="color: #BFEBBF;">)</span> - n_air * np.cos<span style="color: #BFEBBF;">(</span>phi_L<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span> / <span style="color: #DCDCCC;">(</span>n_L * np.cos<span style="color: #BFEBBF;">(</span>phi_i<span style="color: #BFEBBF;">)</span> + n_air * np.cos<span style="color: #BFEBBF;">(</span>phi_L<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span>
+      <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">layer/substrate:</span>
+      <span style="color: #DFAF8F;">rs_ls</span> = <span style="color: #DCDCCC;">(</span>n_L * np.cos<span style="color: #BFEBBF;">(</span>phi_L<span style="color: #BFEBBF;">)</span> - n_S * np.cos<span style="color: #BFEBBF;">(</span>phi_S<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span> / <span style="color: #DCDCCC;">(</span>n_L * np.cos<span style="color: #BFEBBF;">(</span>phi_L<span style="color: #BFEBBF;">)</span> + n_S * np.cos<span style="color: #BFEBBF;">(</span>phi_S<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span>
+      <span style="color: #DFAF8F;">rp_ls</span> = <span style="color: #DCDCCC;">(</span>n_S * np.cos<span style="color: #BFEBBF;">(</span>phi_L<span style="color: #BFEBBF;">)</span> - n_L * np.cos<span style="color: #BFEBBF;">(</span>phi_S<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span> / <span style="color: #DCDCCC;">(</span>n_S * np.cos<span style="color: #BFEBBF;">(</span>phi_L<span style="color: #BFEBBF;">)</span> + n_L * np.cos<span style="color: #BFEBBF;">(</span>phi_S<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span>
+      <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Fujiwara:</span>
+      <span style="color: #DFAF8F;">beta</span> = <span style="color: #BFEBBF;">2</span> * np.pi * d_L * n_L * np.cos<span style="color: #DCDCCC;">(</span>phi_L<span style="color: #DCDCCC;">)</span> / lambda_vac
+      <span style="color: #DFAF8F;">rp_L</span> = <span style="color: #DCDCCC;">(</span>rp_al + rp_ls * np.exp<span style="color: #BFEBBF;">(</span>-<span style="color: #BFEBBF;">2</span>*<span style="color: #BFEBBF;">1j</span>*beta<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span> / <span style="color: #DCDCCC;">(</span><span style="color: #BFEBBF;">1</span> + rp_al * rp_ls * np.exp<span style="color: #BFEBBF;">(</span>-<span style="color: #BFEBBF;">2</span> * <span style="color: #BFEBBF;">1j</span> * beta<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span> 
+      <span style="color: #DFAF8F;">rs_L</span> = <span style="color: #DCDCCC;">(</span>rs_al + rs_ls * np.exp<span style="color: #BFEBBF;">(</span>-<span style="color: #BFEBBF;">2</span>*<span style="color: #BFEBBF;">1j</span>*beta<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span> / <span style="color: #DCDCCC;">(</span> <span style="color: #BFEBBF;">1</span> + rs_al * rs_ls * np.exp<span style="color: #BFEBBF;">(</span>-<span style="color: #BFEBBF;">2</span> * <span style="color: #BFEBBF;">1j</span> * beta<span style="color: #BFEBBF;">)</span><span style="color: #DCDCCC;">)</span>   
+      <span style="color: #DFAF8F;">rho</span> = rp_L / rs_L
+      <span style="color: #DFAF8F;">output</span> = <span style="color: #DCDCCC;">[]</span>
+      output.append<span style="color: #DCDCCC;">(</span><span style="color: #BFEBBF;">[</span>n_L, rho<span style="color: #BFEBBF;">]</span><span style="color: #DCDCCC;">)</span>
 </pre>
 </div>
 
@@ -425,18 +428,19 @@ beta (31.139752412112067+31.69455000949363j)
 rp_L (1.426723122645158-0.9975355870956931j)
 rs_L (-1.067534044700266+0.07383248803644696j)
 rho (-1.3944229215529675+0.8379890813445299j)
+output [[(5+5j), (-1.3944229215529675+0.8379890813445299j)]]
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org6ffeb9b" class="outline-3">
-<h3 id="org6ffeb9b"><span class="section-number-3">5.3</span> Compare calculated rho with given \(\Delta\) and \(\psi\):</h3>
+<div id="outline-container-orgcc6c9ef" class="outline-3">
+<h3 id="orgcc6c9ef"><span class="section-number-3">5.3</span> Compare calculated rho with given \(\Delta\) and \(\psi\):</h3>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Nikolai Weidt</p>
-<p class="date">Created: 2018-09-27 Do 18:15</p>
+<p class="date">Created: 2018-10-04 Do 19:38</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

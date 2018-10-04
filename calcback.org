@@ -1,13 +1,13 @@
 #+TITLE: Calcback
 #+AUTHOR: Nikolai Weidt
 #+Email: weidtn@gmail.com
-#+PROPERTY: session *python*
+#+PROPERTY: header-args:python :session *python*
 #+PROPERTY: cache yes
 
 * What is this?
-Im coding a programm to get the complex refractive index $n = n * ik$ from the ellipsometric parameters $\Delta$ and $\Psi$ I got from a simulation.
+I'm coding a program to get the complex refractive index $n = n * ik$ from the ellipsometric parameters $\Delta$ and $\Psi$ I got from a simulation.
 * Imports:
-#+BEGIN_SRC python :session :results output silent
+#+BEGIN_SRC python :results output silent
 import numpy as np
 import matplotlib
 from matplotlib import pyplot
@@ -16,7 +16,7 @@ from matplotlib import pyplot
 * Defining some variables:
 Defining some variables for later use:
 
-#+BEGIN_SRC python :session :results output silent
+#+BEGIN_SRC python :results output silent
   CSVFILE = "head300nmSiO2.csv"
   phi_i = 70 * np.pi / 180
   d_L = 300
@@ -29,13 +29,13 @@ Defining some variables for later use:
 * Read .csv-file:
 Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,n_S,k_S],...] (Skip columns 3 and 4)
   
-#+BEGIN_SRC python :session :results output silent
+#+BEGIN_SRC python :results output silent
 csv = np.loadtxt(CSVFILE, usecols=(0,1,2,5,6),  delimiter=",", skiprows=1)
 #+END_SRC
 
 :DEBUG:
 The array looks like this:
-#+BEGIN_SRC python :session :results output :exports both
+#+BEGIN_SRC python :results output :exports both
 print(csv)
 #+END_SRC
 #+RESULTS:
@@ -48,11 +48,10 @@ print(csv)
 :  [318.          37.90308303 100.64846104   3.0435       3.0109    ]
 :  [321.          36.47640803  98.54577151   3.1042       2.9994    ]
 :  [324.          35.12615859  95.72242205   3.1644       2.9858    ]]
-:END:
 
 * Calculate $\rho$
 ** Create a matrix containing every possible refractive index (n+ik):
-#+BEGIN_SRC python :session :results silent
+#+BEGIN_SRC python :results silent
   lsp_re = np.linspace(0.1, rerange, 101)
   lsp_im = np.linspace(0.1, imrange, 101)
   re, im = np.meshgrid (lsp_re, lsp_im, copy=False)
@@ -61,7 +60,7 @@ print(csv)
 
 :DEBUG:
 This gives the following matrix:
-#+BEGIN_SRC python :session :results output :exports both :tangle no
+#+BEGIN_SRC python :results output :exports both :tangle no
 print(matrix)
 #+END_SRC
 
@@ -84,7 +83,8 @@ print(matrix)
 
 :END:
 ** Calculate: 
-#+BEGIN_SRC python :session :results output silent
+   
+#+BEGIN_SRC python :results output silent
   n_S = (csv[i,3] + 1j* csv[i,4])
   lambda_vac = csv[i,0]
   for n_L in matrix.flat:
@@ -110,7 +110,7 @@ print(matrix)
 
 
 :DEBUG:
-#+BEGIN_SRC python :session :results output :tangle no :exports results 
+#+BEGIN_SRC python :results output :tangle no :exports results 
     print ("for n_L = ", n_L)
     print("at lambda = ", lambda_vac)
     print("phi_L", phi_L)
