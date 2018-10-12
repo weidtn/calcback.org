@@ -3,6 +3,8 @@
 #+Email: weidtn@gmail.com
 #+PROPERTY: header-args:python :session *python*
 #+PROPERTY: cache yes
+#+PROPERTY: latexpreview inlineimages
+#+PROPERTY: attr_html:width 600px
 
 * What is this?
 I'm coding a program to get the complex refractive index $n = n * ik$ from the ellipsometric parameters $\Delta$ and $\Psi$ I got from a simulation.
@@ -35,19 +37,19 @@ csv = np.loadtxt(CSVFILE, usecols=(0,1,2,5,6),  delimiter=",", skiprows=1)
 
 :DEBUG:
 The array looks like this:
-#+BEGIN_SRC python :results output :exports both
+#+BEGIN_SRC python :results output table :exports both
 print(csv)
 #+END_SRC
 #+RESULTS:
-: [[300.          55.2217535   84.37228319   2.6726       3.0375    ]
-:  [303.          50.11187439  93.3085011    2.7346       3.0381    ]
-:  [306.          46.35824553  98.43681392   2.7967       3.0368    ]
-:  [309.          43.50539341 101.18051798   2.8588       3.0334    ]
-:  [312.          41.29392865 102.19236832   2.9206       3.0279    ]
-:  [315.          39.48751217 101.93002      2.9822       3.0205    ]
-:  [318.          37.90308303 100.64846104   3.0435       3.0109    ]
-:  [321.          36.47640803  98.54577151   3.1042       2.9994    ]
-:  [324.          35.12615859  95.72242205   3.1644       2.9858    ]]
+| 300 |  55.2217535 |  84.37228319 | 2.6726 | 3.0375 |
+| 303 | 50.11187439 |   93.3085011 | 2.7346 | 3.0381 |
+| 306 | 46.35824553 |  98.43681392 | 2.7967 | 3.0368 |
+| 309 | 43.50539341 | 101.18051798 | 2.8588 | 3.0334 |
+| 312 | 41.29392865 | 102.19236832 | 2.9206 | 3.0279 |
+| 315 | 39.48751217 |    101.93002 | 2.9822 | 3.0205 |
+| 318 | 37.90308303 | 100.64846104 | 3.0435 | 3.0109 |
+| 321 | 36.47640803 |  98.54577151 | 3.1042 | 2.9994 |
+| 324 | 35.12615859 |  95.72242205 | 3.1644 | 2.9858 |
 
 * Calculate $\rho$
 ** Create a matrix containing every possible refractive index (n+ik):
@@ -83,14 +85,25 @@ print(matrix)
 
 :END:
 ** Calculate: 
-   
+By using Snell's Law to calculate the refractive angles inside the media. Phi is the incident angle for the layer, n1 and n2 are refractive indices of first and second medium. Returns the angle of refraction.
+#+CAPTION: Snell's Law
+#+NAME: fig:snell
+#+ATTR_ORG: :width 500
+#+ATTR_HTML: :width 500
+#+ATTR_LATEX: :width 500
+[[./snell.jpg]]
+#+BEGIN_SRC python
+  def snell(phi, n1, n2):
+      phi_ref = np.arcsin((np.sin(phi) * n1) / n2)
+      return phi_ref
+#+END_SRC   
+
 #+BEGIN_SRC python :results output silent
   n_S = (csv[i,3] + 1j* csv[i,4])
   lambda_vac = csv[i,0]
   for n_L in matrix.flat:
-        # Snell's Law:
-        phi_L = np.arcsin((np.sin(phi_i)*n_air)/ n_L)
-        phi_S = np.arcsin((np.sin(phi_L)*n_L)/ n_S)
+        phi_L = snell(phi_i,n_air,n_L)
+        phi_S = snell(phi_L,n_L,n_S)
         # Fresnel equations:
         #
         # air/layer:
