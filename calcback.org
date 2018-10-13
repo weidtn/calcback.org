@@ -6,6 +6,7 @@
 #+PROPERTY: latexpreview inlineimages
 #+PROPERTY: attr_html:width 600px
 
+bibliography:forschungspraktikum.bib
 * What is this?
 I'm coding a program to get the complex refractive index $n = n * ik$ from the ellipsometric parameters $\Delta$ and $\Psi$ I got from a simulation.
 * Imports:
@@ -85,7 +86,9 @@ print(matrix)
 
 :END:
 ** Calculate: 
-By using Snell's Law to calculate the refractive angles inside the media. Phi is the incident angle for the layer, n1 and n2 are refractive indices of first and second medium. Returns the angle of refraction.
+*** By using Snell's Law to calculate the refractive angles inside the media.
+Phi is the incident angle for the layer, n1 and n2 are refractive indices of first and second medium. Returns the angle of refraction.
+
 #+CAPTION: Snell's Law
 #+NAME: fig:snell
 #+ATTR_ORG: :width 500
@@ -98,6 +101,20 @@ By using Snell's Law to calculate the refractive angles inside the media. Phi is
       return phi_ref
 #+END_SRC   
 
+#+RESULTS:
+
+
+*** TODO Calculate r_p and r_s with Fresnel equations:
+#+BEGIN_SRC python
+  def fresnel(n1, phi1, n2, phi2):
+      return rs, rp
+#+END_SRC
+
+*** TODO Calculate \rho after Fujiwara cite:fujiwara2009spectroscopic:
+#+BEGIN_SRC python
+
+#+END_SRC
+*** TODO Wrap a for-loop around these functions to calculate \rho for every n_L in the matrix
 #+BEGIN_SRC python :results output silent
   n_S = (csv[i,3] + 1j* csv[i,4])
   lambda_vac = csv[i,0]
@@ -159,3 +176,4 @@ output [[(5+5j), (-1.3944229215529675+0.8379890813445299j)]]
 :END:
 
 ** Compare calculated rho with given $\Delta$ and $\psi$:
+

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-10-12 Fr 17:02 -->
+<!-- 2018-10-13 Sa 17:03 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Calcback</title>
@@ -256,31 +256,53 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4cf8d53">1. What is this?</a></li>
-<li><a href="#orgb42d0f2">2. Imports:</a></li>
-<li><a href="#orgb62b972">3. Defining some variables:</a></li>
-<li><a href="#orgcf87728">4. Read .csv-file:</a></li>
-<li><a href="#orgb9f59f9">5. Calculate \(\rho\)</a>
+<li><a href="#orgd929cd6">1. What is this?</a></li>
+<li><a href="#org4573257">2. Imports:</a></li>
+<li><a href="#org3ea1682">3. Defining some variables:</a></li>
+<li><a href="#orge8596fc">4. Read .csv-file:</a></li>
+<li><a href="#orgf4eebc5">5. Calculate \(\rho\)</a>
 <ul>
-<li><a href="#org669627f">5.1. Create a matrix containing every possible refractive index (n+ik):</a></li>
-<li><a href="#org36fb2b6">5.2. Calculate:</a></li>
-<li><a href="#orgadbf1ac">5.3. Compare calculated rho with given \(\Delta\) and \(\psi\):</a></li>
+<li><a href="#org07e6e02">5.1. Create a matrix containing every possible refractive index (n+ik):</a></li>
+<li><a href="#orgdf0d841">5.2. Calculate:</a>
+<ul>
+<li><a href="#org0c426d7">5.2.1. By using Snell's Law to calculate the refractive angles inside the media.</a></li>
+<li><a href="#org7336cc0">5.2.2. <span class="todo TODO">TODO</span> Calculate r<sub>p</sub> and r<sub>s</sub> with Fresnel equations:</a></li>
+<li><a href="#orgd01a60c">5.2.3. <span class="todo TODO">TODO</span> Calculate &rho; after Fujiwara cite:fujiwara2009spectroscopic:</a></li>
+<li><a href="#org68ed6e2">5.2.4. <span class="todo TODO">TODO</span> Wrap a for-loop around these functions to calculate &rho; for every n<sub>L</sub> in the matrix</a></li>
+</ul>
+</li>
+<li><a href="#org3928a68">5.3. Compare calculated rho with given \(\Delta\) and \(\psi\):</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-org4cf8d53" class="outline-2">
-<h2 id="org4cf8d53"><span class="section-number-2">1</span> What is this?</h2>
+<p>
+<h1 class='org-ref-bib-h1'>Bibliography</h1>
+<ul class='org-ref-bib'><li><a id="fujiwara2009spectroscopic">[fujiwara2009spectroscopic]</a> <a name="fujiwara2009spectroscopic"></a>@miscfujiwara2009spectroscopic,
+  address = Chichester,
+  author = Fujiwara, Hiroyuki,
+  edition = Printed with corrections,
+  hdsurl = http://hds.hebis.de/ubks/Record/HEB400572877,
+  isbn = 0470016086,
+  keywords = ,
+  title = Spectroscopic ellipsometry : principles and applications,
+  uniqueid = HEB400572877,
+  url = http://bvbr.bib-bvb.de:8991/F?func=service&doc_library=BVB01&local_base=BVB01&doc_number=024667125&sequence=000002&line_number=0001&func_code=DB_RECORDS&service_type=MEDIA,
+  year = 2009
+</li>
+</ul>
+</p>
+<div id="outline-container-orgd929cd6" class="outline-2">
+<h2 id="orgd929cd6"><span class="section-number-2">1</span> What is this?</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 I'm coding a program to get the complex refractive index \(n = n * ik\) from the ellipsometric parameters \(\Delta\) and \(\Psi\) I got from a simulation.
 </p>
 </div>
 </div>
-<div id="outline-container-orgb42d0f2" class="outline-2">
-<h2 id="orgb42d0f2"><span class="section-number-2">2</span> Imports:</h2>
+<div id="outline-container-org4573257" class="outline-2">
+<h2 id="org4573257"><span class="section-number-2">2</span> Imports:</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #0000FF;">import</span> numpy <span style="color: #0000FF;">as</span> np
@@ -291,8 +313,8 @@ I'm coding a program to get the complex refractive index \(n = n * ik\) from the
 </div>
 </div>
 
-<div id="outline-container-orgb62b972" class="outline-2">
-<h2 id="orgb62b972"><span class="section-number-2">3</span> Defining some variables:</h2>
+<div id="outline-container-org3ea1682" class="outline-2">
+<h2 id="org3ea1682"><span class="section-number-2">3</span> Defining some variables:</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Defining some variables for later use:
@@ -311,8 +333,8 @@ Defining some variables for later use:
 </div>
 </div>
 
-<div id="outline-container-orgcf87728" class="outline-2">
-<h2 id="orgcf87728"><span class="section-number-2">4</span> Read .csv-file:</h2>
+<div id="outline-container-orge8596fc" class="outline-2">
+<h2 id="orge8596fc"><span class="section-number-2">4</span> Read .csv-file:</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,n<sub>S,k</sub><sub>S</sub>],&#x2026;] (Skip columns 3 and 4)
@@ -422,12 +444,12 @@ The array looks like this:
 </div>
 </div>
 
-<div id="outline-container-orgb9f59f9" class="outline-2">
-<h2 id="orgb9f59f9"><span class="section-number-2">5</span> Calculate \(\rho\)</h2>
+<div id="outline-container-orgf4eebc5" class="outline-2">
+<h2 id="orgf4eebc5"><span class="section-number-2">5</span> Calculate \(\rho\)</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org669627f" class="outline-3">
-<h3 id="org669627f"><span class="section-number-3">5.1</span> Create a matrix containing every possible refractive index (n+ik):</h3>
+<div id="outline-container-org07e6e02" class="outline-3">
+<h3 id="org07e6e02"><span class="section-number-3">5.1</span> Create a matrix containing every possible refractive index (n+ik):</h3>
 <div class="outline-text-3" id="text-5-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #BA36A5;">lsp_re</span> = np.linspace<span style="color: #707183;">(</span><span style="color: #D0372D;">0</span>.<span style="color: #D0372D;">1</span>, rerange, <span style="color: #D0372D;">101</span><span style="color: #707183;">)</span>
@@ -462,14 +484,19 @@ This gives the following matrix:
 </pre>
 </div>
 </div>
-<div id="outline-container-org36fb2b6" class="outline-3">
-<h3 id="org36fb2b6"><span class="section-number-3">5.2</span> Calculate:</h3>
+<div id="outline-container-orgdf0d841" class="outline-3">
+<h3 id="orgdf0d841"><span class="section-number-3">5.2</span> Calculate:</h3>
 <div class="outline-text-3" id="text-5-2">
+</div>
+<div id="outline-container-org0c426d7" class="outline-4">
+<h4 id="org0c426d7"><span class="section-number-4">5.2.1</span> By using Snell's Law to calculate the refractive angles inside the media.</h4>
+<div class="outline-text-4" id="text-5-2-1">
 <p>
-By using Snell's Law to calculate the refractive angles inside the media. Phi is the incident angle for the layer, n1 and n2 are refractive indices of first and second medium. Returns the angle of refraction.
+Phi is the incident angle for the layer, n1 and n2 are refractive indices of first and second medium. Returns the angle of refraction.
 </p>
 
-<div id="org068362b" class="figure">
+
+<div id="orgf984724" class="figure">
 <p><img src="./snell.jpg" alt="snell.jpg" width="500" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Snell's Law</p>
@@ -480,7 +507,33 @@ By using Snell's Law to calculate the refractive angles inside the media. Phi is
     <span style="color: #0000FF;">return</span> phi_ref
 </pre>
 </div>
+</div>
+</div>
 
+
+<div id="outline-container-org7336cc0" class="outline-4">
+<h4 id="org7336cc0"><span class="section-number-4">5.2.2</span> <span class="todo TODO">TODO</span> Calculate r<sub>p</sub> and r<sub>s</sub> with Fresnel equations:</h4>
+<div class="outline-text-4" id="text-5-2-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #0000FF;">def</span> <span style="color: #006699;">fresnel</span><span style="color: #707183;">(</span>n1, phi1, n2, phi2<span style="color: #707183;">)</span>:
+    <span style="color: #0000FF;">return</span> rs, rp
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd01a60c" class="outline-4">
+<h4 id="orgd01a60c"><span class="section-number-4">5.2.3</span> <span class="todo TODO">TODO</span> Calculate &rho; after Fujiwara <a class='org-ref-reference' href="#fujiwara2009spectroscopic">fujiwara2009spectroscopic</a>:</h4>
+<div class="outline-text-4" id="text-5-2-3">
+<div class="org-src-container">
+<pre class="src src-python">
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org68ed6e2" class="outline-4">
+<h4 id="org68ed6e2"><span class="section-number-4">5.2.4</span> <span class="todo TODO">TODO</span> Wrap a for-loop around these functions to calculate &rho; for every n<sub>L</sub> in the matrix</h4>
+<div class="outline-text-4" id="text-5-2-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #BA36A5;">n_S</span> = <span style="color: #707183;">(</span>csv<span style="color: #7388D6;">[</span>i,<span style="color: #D0372D;">3</span><span style="color: #7388D6;">]</span> + <span style="color: #D0372D;">1j</span>* csv<span style="color: #7388D6;">[</span>i,<span style="color: #D0372D;">4</span><span style="color: #7388D6;">]</span><span style="color: #707183;">)</span>
 <span style="color: #BA36A5;">lambda_vac</span> = csv<span style="color: #707183;">[</span>i,<span style="color: #D0372D;">0</span><span style="color: #707183;">]</span>
@@ -523,15 +576,16 @@ output [[(5+5j), (-1.3944229215529675+0.8379890813445299j)]]
 </pre>
 </div>
 </div>
+</div>
 
-<div id="outline-container-orgadbf1ac" class="outline-3">
-<h3 id="orgadbf1ac"><span class="section-number-3">5.3</span> Compare calculated rho with given \(\Delta\) and \(\psi\):</h3>
+<div id="outline-container-org3928a68" class="outline-3">
+<h3 id="org3928a68"><span class="section-number-3">5.3</span> Compare calculated rho with given \(\Delta\) and \(\psi\):</h3>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Nikolai Weidt</p>
-<p class="date">Created: 2018-10-12 Fr 17:02</p>
+<p class="date">Created: 2018-10-13 Sa 17:03</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
