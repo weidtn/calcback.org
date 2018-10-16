@@ -11,6 +11,15 @@
 
 * What is this?
 I'm coding a program to get the complex refractive index $n = n * ik$ from the ellipsometric parameters $\Delta$ and $\Psi$ I got from a simulation.
+The result for 300nm SiO_2 should look like this:
+
+#+CAPTION: Refractive index should look like this
+#+NAME: sio2
+#+attr_latex: :width 0.5\textwidth
+#+attr_html: :width 500
+#+attr_org: :width 500
+[[./RefractiveIndexSiO2.png]]
+
 * Imports:
 #+BEGIN_SRC python :results output silent
   import numpy as np
@@ -24,12 +33,12 @@ Defining some variables for later use:
 
 #+BEGIN_SRC python :results output silent
   CSVFILE = "head300nmSiO2.csv"
-  phi_i = 70 * np.pi / 180
-  d_L = 300
-  n_air = 1
-  rerange = 5
-  imrange = 5
-  i = 2
+  phi_i = 70 * np.pi / 180 # converting incident angle from deg (first number) to rad
+  d_L = 300 # thickness of layer in nm
+  n_air = 1 # refractive index of air
+  rerange = 5 # upper limit for real part 
+  imrange = 5 # upper limit for imaginary part
+  i = 0 # only look at one row
 #+END_SRC
 
 * Read .csv-file:
@@ -75,8 +84,9 @@ print(n_L)
 : [0.1  +0.1j 0.149+0.1j 0.198+0.1j ... 4.902+5.j  4.951+5.j  5.   +5.j ]
 
 :END:
-** Calculate: 
-*** By using Snell's Law to calculate the refractive angles.
+** Calculate \rho: 
+*** First we define some functions:
+**** Snell's Law to calculate the refractive angles:
 Phi is the incident angle for the layer, n1 and n2 are refractive indices of first and second medium. Returns the angle of refraction.
 
 #+CAPTION: Snell's Law
@@ -93,7 +103,7 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 #+END_SRC   
 
 
-*** Calculate r_p and r_s with Fresnel equations:
+**** Calculate r_p and r_s with Fresnel equations:
 #+BEGIN_SRC python :results silent
   def fresnel(n1, phi1, n2, phi2):
       """Takes refractive indices and angles of two layers to calculate the amplitude reflection coefficients"""
@@ -103,7 +113,7 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 #+END_SRC
 
 
-*** Calculate \rho for the layer with eq. 5.2 in citenum:fujiwara2009spectroscopic  
+**** Calculate \rho for the layer with eq. 5.2 in citenum:fujiwara2009spectroscopic:
 #+BEGIN_SRC python :results silent
   def calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac):
       beta = 2 * np.pi * d_L * n_L * np.cos(phi_L) / lambda_vac
@@ -114,62 +124,42 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 #+END_SRC
 
 
-*** Wrap a for-loop around these functions to calculate \rho for every n_L in the matrix
-
-#+BEGIN_SRC python :results output
-    n_S = (csv[i, 3] + 1j * csv[i, 4])
-    lambda_vac = csv[i, 0]
-    output = [] 
-    phi_L = snell(phi_i, n_air, n_L)
-    phi_S = snell(phi_L, n_L, n_S)
-    # Fresnel equations:
-    # air/layer:
-    rs_al, rp_al = fresnel(n_air, phi_i, n_L, phi_L)
-    # layer/substrate:
-    rs_ls, rp_ls = fresnel(n_L, phi_L, n_S, phi_S)
-
-    rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac)
-    output.append((n_L,rho_L))
+*** Then we call these functions one after another to calculate \rho:
+Get refractive index of the substrate (n_S) and lambda from the csv:
+#+BEGIN_SRC python :results output silent
+  n_S = (csv[i, 3] + 1j * csv[i, 4])
+  lambda_vac = csv[i, 0]
 #+END_SRC
 
-#+RESULTS:
+Then call the above defined functions
+#+BEGIN_SRC python :results output silent
+  phi_L = snell(phi_i, n_air, n_L)
+  phi_S = snell(phi_L, n_L, n_S)
+  # Fresnel equations:
+  # air/layer:
+  rs_al, rp_al = fresnel(n_air, phi_i, n_L, phi_L)
+  # layer/substrate:
+  rs_ls, rp_ls = fresnel(n_L, phi_L, n_S, phi_S)
+
+  rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac)
+#+END_SRC
 
 :DEBUG:
 #+BEGIN_SRC python :results output :tangle no :exports results 
-  print("lambda = %.1f nm" % lambda_vac)
-  print("phi_L", phi_L)
-  print("phi_S", phi_S)
-  print("rs_al", rs_al)
-  print("rp_al", rp_al)
-  print("rs_ls", rs_ls)
-  print("rp_ls", rp_ls)
-  print("output", output)
+  # print("lambda = %.1f nm" % lambda_vac)
+  # print("phi_L", phi_L)
+  # print("phi_S", phi_S)
+  # print("rs_al", rs_al)
+  # print("rp_al", rp_al)
+  # print("rs_ls", rs_ls)
+  # print("rp_ls", rp_ls)
+  print("rho_L ", rho_L)
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-lambda = 306.0 nm
-phi_L [0.7797364 -2.58700431j 0.97117923-2.34546047j 1.09162412-2.12866149j ...
- 0.09365552-0.09610292j 0.09367773-0.09516885j 0.0936905 -0.09424363j]
-phi_S [0.15262013-0.16860119j 0.15262013-0.16860119j 0.15262013-0.16860119j ...
- 0.15262013-0.16860119j 0.15262013-0.16860119j 0.15262013-0.16860119j]
-rs_al [-0.76056258-0.63804007j -0.75493511-0.63891726j -0.74795474-0.64097679j
- ... -0.93224001-0.06574197j -0.93225653-0.06510688j
- -0.93227887-0.06447801j]
-rp_al [-0.98554915+1.62448726e-04j -0.97821619-8.38075816e-03j
- -0.97043556-2.03111186e-02j ...  0.46784441+3.35036882e-01j
-  0.46930586+3.32077548e-01j  0.47076999+3.29152736e-01j]
-rs_ls [-0.67909432+0.21122007j -0.6802466 +0.20856856j -0.68217315+0.20545614j
- ...  0.25714253-0.02238312j  0.25941805-0.02471529j
-  0.26169543-0.02701902j]
-rp_ls [ 0.99271976+0.0072871j   0.99340093+0.0153449j   0.99562423+0.02542659j
- ... -0.25937426+0.00678712j -0.26171077+0.00905496j
- -0.2640462 +0.01129423j]
-output [(array([0.1  +0.1j, 0.149+0.1j, 0.198+0.1j, ..., 4.902+5.j , 4.951+5.j ,
-       5.   +5.j ]), array([ 0.77162347+0.64751574j,  0.77730318+0.64647945j,
-        0.78424286+0.6440844j , ..., -1.38366166+0.85035904j,
-       -1.38911153+0.84419545j, -1.39442292+0.83798908j]))]
-#+end_example
+: rho_L  [ 0.7716204 +0.6475171j   0.77729972+0.64648074j  0.78423885+0.64408563j
+:  ... -1.38366166+0.85035904j -1.38911153+0.84419545j
+:  -1.39442292+0.83798908j]
 
 #+BEGIN_SRC python :results output
   plt.plot()
@@ -182,18 +172,22 @@ output [(array([0.1  +0.1j, 0.149+0.1j, 0.198+0.1j, ..., 4.902+5.j , 4.951+5.j ,
 
 :END:
 
-** Identify minimum of \rho with \rho = tan(\psi) * e^i\Delta :
+*** Identify the best matching \rho with \rho = tan(\psi) * e^i\Delta :
 #+BEGIN_SRC python :results output
-  # psi is in our csv-file at index 1, delta at index 2 at row "i" for lambda 
-  psi = csv[i][1]
-  delta = csv[i][2]
-  rho = np.tan(psi) * np.exp(1j*delta)
-  diff = abs(rho-rho_L)
-  idx = np.argmin(diff) # index of the minimum
-  minimum = diff[minimum_idx]
+    # psi is in our csv-file at index 1, delta at index 2 at row "i" for lambda 
+    psi = csv[i][1]
+    delta = csv[i][2]
+    rho = np.tan(psi) * np.exp(1j*delta)
+    diff = abs(rho-rho_L)
+    idx = np.argmin(diff) # index of the minimum
+    minimum = diff[minimum_idx]
+    n = n_L[idx]
+    print("This gives us the refractive index n_L = ", n)
 #+END_SRC
 
 #+RESULTS:
+: This gives us the refractive index n_L =  (1.08+0.1j)
+
 
 
 bibliographystyle:unsrt
