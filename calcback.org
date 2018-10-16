@@ -32,13 +32,13 @@ The result for 300nm SiO_2 should look like this:
 Defining some variables for later use:
 
 #+BEGIN_SRC python :results output silent
-  CSVFILE = "head300nmSiO2.csv"
+  CSVFILE = "head300nmSiO2.csv" # head = only 10 rows of data
   phi_i = 70 * np.pi / 180 # converting incident angle from deg (first number) to rad
   d_L = 300 # thickness of layer in nm
   n_air = 1 # refractive index of air
   rerange = 5 # upper limit for real part 
   imrange = 5 # upper limit for imaginary part
-  i = 0 # only look at one row
+  i = 1 # only look at one row
 #+END_SRC
 
 * Read .csv-file:
@@ -64,14 +64,14 @@ print(csv)
 | 321 | 36.47640803 |  98.54577151 | 3.1042 | 2.9994 |
 | 324 | 35.12615859 |  95.72242205 | 3.1644 | 2.9858 |
 
-* Calculate $\rho$
+* Calculate \rho
 ** Create a matrix containing every possible refractive index (n+ik):
 #+BEGIN_SRC python :results silent
-  lsp_re = np.linspace(0.1, rerange, 101)
+  lsp_re = np.linspace(0.1, rerange, 1001)
   lsp_im = np.linspace(0.1, imrange, 101)
   re, im = np.meshgrid (lsp_re, lsp_im, copy=False)
   n_L = 1j * im + re
-  n_L = n_L.flatten()
+  n_L = n_L.flatten() # create an onedimensional array from matrix
 #+END_SRC
 
 :DEBUG:
@@ -81,9 +81,11 @@ print(n_L)
 #+END_SRC
 
 #+RESULTS:
-: [0.1  +0.1j 0.149+0.1j 0.198+0.1j ... 4.902+5.j  4.951+5.j  5.   +5.j ]
+: [0.1   +0.1j 0.1049+0.1j 0.1098+0.1j ... 4.9902+5.j  4.9951+5.j
+:  5.    +5.j ]
 
 :END:
+
 ** Calculate \rho: 
 *** First we define some functions:
 **** Snell's Law to calculate the refractive angles:
@@ -94,7 +96,7 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 #+ATTR_ORG: :width 500
 #+ATTR_HTML: :width 500
 #+ATTR_LATEX: :width 0.5\textwidth
-#*ATTR_LATEX: :placement [H]
+#+ATTR_LATEX: :placement [H]
 [[./snell.jpg]]
 #+BEGIN_SRC python :results silent
   def snell(phi, n1, n2):
@@ -113,7 +115,7 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 #+END_SRC
 
 
-**** Calculate \rho for the layer with eq. 5.2 in citenum:fujiwara2009spectroscopic:
+**** Calculate \rho for the layer with eq. 5.2 in Spectroscopic Ellipsometry citenum:fujiwara2009spectroscopic:
 #+BEGIN_SRC python :results silent
   def calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac):
       beta = 2 * np.pi * d_L * n_L * np.cos(phi_L) / lambda_vac
@@ -145,7 +147,8 @@ Then call the above defined functions
 #+END_SRC
 
 :DEBUG:
-#+BEGIN_SRC python :results output :tangle no :exports results 
+Debug:
+#+BEGIN_SRC python :results output :tangle no :exports no 
   # print("lambda = %.1f nm" % lambda_vac)
   # print("phi_L", phi_L)
   # print("phi_S", phi_S)
@@ -153,40 +156,32 @@ Then call the above defined functions
   # print("rp_al", rp_al)
   # print("rs_ls", rs_ls)
   # print("rp_ls", rp_ls)
-  print("rho_L ", rho_L)
+  print("rho_L =", rho_L)
 #+END_SRC
 
 #+RESULTS:
-: rho_L  [ 0.7716204 +0.6475171j   0.77729972+0.64648074j  0.78423885+0.64408563j
-:  ... -1.38366166+0.85035904j -1.38911153+0.84419545j
+: rho_L = [ 0.77162186+0.64751645j  0.77213475+0.64747272j  0.77265972+0.64741577j
+:  ... -1.3933717 +0.83923359j -1.393898  +0.83861153j
 :  -1.39442292+0.83798908j]
-
-#+BEGIN_SRC python :results output
-  plt.plot()
-  plt.show()
-
-
-#+END_SRC
-
-#+RESULTS:
 
 :END:
 
-*** Identify the best matching \rho with \rho = tan(\psi) * e^i\Delta :
+
+*** Identify the best fitting rho with \rho = tan(\psi) * e^i\Delta :
 #+BEGIN_SRC python :results output
-    # psi is in our csv-file at index 1, delta at index 2 at row "i" for lambda 
-    psi = csv[i][1]
-    delta = csv[i][2]
-    rho = np.tan(psi) * np.exp(1j*delta)
-    diff = abs(rho-rho_L)
-    idx = np.argmin(diff) # index of the minimum
-    minimum = diff[minimum_idx]
-    n = n_L[idx]
-    print("This gives us the refractive index n_L = ", n)
+  # psi is in our csv-file at index 1, delta at index 2 at row "i" for lambda
+  psi = csv[i][1]
+  delta = csv[i][2]
+  rho = np.tan(psi) * np.exp(1j * delta)
+  diff = abs(rho - rho_L)  # magnitude of complex number
+  idx = np.argmin(diff)  # index of the minimum
+  minimum = diff[idx]
+  n = n_L[idx]
+  print("This gives us the refractive index n_L = ", n)
 #+END_SRC
 
 #+RESULTS:
-: This gives us the refractive index n_L =  (1.08+0.1j)
+: This gives us the refractive index n_L =  (1.2172000000000003+0.1j)
 
 
 

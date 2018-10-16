@@ -1,4 +1,4 @@
-% Created 2018-10-13 Sa 17:05
+% Created 2018-10-15 Mo 14:55
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -14,6 +14,7 @@
 \usepackage{amssymb}
 \usepackage{capt-of}
 \usepackage{hyperref}
+\usepackage{float}
 \author{Nikolai Weidt}
 \date{\today}
 \title{Calcback}
@@ -29,12 +30,13 @@
 \maketitle
 \tableofcontents
 
-\bibliography{forschungspraktikum}
+
+
 \section{What is this?}
-\label{sec:org1000554}
+\label{sec:orgb098a27}
 I'm coding a program to get the complex refractive index \(n = n * ik\) from the ellipsometric parameters \(\Delta\) and \(\Psi\) I got from a simulation.
 \section{Imports:}
-\label{sec:org17d5ecd}
+\label{sec:org47930ab}
 \begin{verbatim}
 import numpy as np
 import matplotlib
@@ -42,7 +44,7 @@ from matplotlib import pyplot
 \end{verbatim}
 
 \section{Defining some variables:}
-\label{sec:org00ef83b}
+\label{sec:org560e96f}
 Defining some variables for later use:
 
 \begin{verbatim}
@@ -56,7 +58,7 @@ i = 0
 \end{verbatim}
 
 \section{Read .csv-file:}
-\label{sec:org26419b9}
+\label{sec:org4344ab0}
 Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,n\(_{\text{S,k}}\)\(_{\text{S}}\)],\ldots{}] (Skip columns 3 and 4)
 
 \begin{verbatim}
@@ -83,9 +85,9 @@ print(csv)
 \end{center}
 
 \section{Calculate \(\rho\)}
-\label{sec:org7a5acd2}
+\label{sec:org39c7fec}
 \subsection{Create a matrix containing every possible refractive index (n+ik):}
-\label{sec:org77978a0}
+\label{sec:orgaaa717f}
 \begin{verbatim}
 lsp_re = np.linspace(0.1, rerange, 101)
 lsp_im = np.linspace(0.1, imrange, 101)
@@ -114,15 +116,16 @@ print(matrix)
   5.   +5.j   ]]
 \end{verbatim}
 \subsection{Calculate:}
-\label{sec:org475c76a}
-\subsubsection{By using Snell's Law to calculate the refractive angles inside the media.}
-\label{sec:org464757d}
+\label{sec:orgba19354}
+\subsubsection{By using Snell's Law to calculate the refractive angles.}
+\label{sec:orgb4e2d87}
 Phi is the incident angle for the layer, n1 and n2 are refractive indices of first and second medium. Returns the angle of refraction.
 
+\#*ATTR\(_{\text{LATEX}}\): :placement [H]
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=500]{./snell.jpg}
-\caption{\label{fig:orgad8beb4}
+\includegraphics[width=0.5\textwidth]{./snell.jpg}
+\caption{\label{fig:orgddc71e3}
 Snell's Law}
 \end{figure}
 \begin{verbatim}
@@ -133,16 +136,20 @@ def snell(phi, n1, n2):
 
 
 \subsubsection{{\bfseries\sffamily TODO} Calculate r\(_{\text{p}}\) and r\(_{\text{s}}\) with Fresnel equations:}
-\label{sec:orga262a86}
+\label{sec:orga39ab1e}
 \begin{verbatim}
 def fresnel(n1, phi1, n2, phi2):
+    """Takes refractive indices and angles of two layers to calculate the amplitude reflection coefficients"""
+    rs = (n1 * np.cos(phi1) - n2 * np.cos(phi2)) / (n1 * np.cos(phi1) + n2 * np.cos(phi2))
+    rp = (n2 * np.cos(phi1) - n1 * np.cos(phi2)) / (n2 * np.cos(phi1) + n1 * np.cos(phi2))
     return rs, rp
 \end{verbatim}
 
-\subsubsection{{\bfseries\sffamily TODO} Calculate \(\rho\) after Fujiwara \cite{fujiwara2009spectroscopic}:}
-\label{sec:orgdfd9357}
+\subsubsection{{\bfseries\sffamily TODO} Calculate \(\rho\) after eq. 5.2 in \citenum{fujiwara2009spectroscopic}}
+\label{sec:orgc232e8f}
+
 \subsubsection{{\bfseries\sffamily TODO} Wrap a for-loop around these functions to calculate \(\rho\) for every n\(_{\text{L}}\) in the matrix}
-\label{sec:org198c2e1}
+\label{sec:orgf88de90}
 \begin{verbatim}
 n_S = (csv[i,3] + 1j* csv[i,4])
 lambda_vac = csv[i,0]
@@ -150,13 +157,10 @@ for n_L in matrix.flat:
       phi_L = snell(phi_i,n_air,n_L)
       phi_S = snell(phi_L,n_L,n_S)
       # Fresnel equations:
-      #
       # air/layer:
-      rs_al = (n_air * np.cos(phi_i) - n_L * np.cos(phi_L)) / (n_air * np.cos(phi_i) + n_L * np.cos(phi_L))
-      rp_al = (n_L * np.cos(phi_i) - n_air * np.cos(phi_L)) / (n_L * np.cos(phi_i) + n_air * np.cos(phi_L))
+      rs_al, rp_al = fresnel(n_air, phi_i, n_L, phi_L)
       # layer/substrate:
-      rs_ls = (n_L * np.cos(phi_L) - n_S * np.cos(phi_S)) / (n_L * np.cos(phi_L) + n_S * np.cos(phi_S))
-      rp_ls = (n_S * np.cos(phi_L) - n_L * np.cos(phi_S)) / (n_S * np.cos(phi_L) + n_L * np.cos(phi_S))
+      rs_ls, rp_ls = fresnel(n_L, phi_L, n_S, phi_S)
       # Fujiwara:
       beta = 2 * np.pi * d_L * n_L * np.cos(phi_L) / lambda_vac
       rp_L = (rp_al + rp_ls * np.exp(-2*1j*beta)) / (1 + rp_al * rp_ls * np.exp(-2 * 1j * beta)) 
@@ -184,5 +188,9 @@ output [[(5+5j), (-1.3944229215529675+0.8379890813445299j)]]
 \end{verbatim}
 
 \subsection{Compare calculated rho with given \(\Delta\) and \(\psi\):}
-\label{sec:orgb28adba}
+\label{sec:orgf0e8c09}
+
+
+\bibliographystyle{unsrt}
+\bibliography{forschungspraktikum}
 \end{document}
