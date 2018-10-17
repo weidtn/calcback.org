@@ -7,6 +7,7 @@
 #+PROPERTY: attr_html:width 600px
 #+options: toc:2
 #+latex_header: \usepackage{float}
+#+PANDOC_OPTIONS: pdf-engine:xelatex
 
 
 * What is this?
@@ -15,13 +16,14 @@ The result for 300nm SiO_2 should look like this:
 
 #+CAPTION: Refractive index should look like this
 #+NAME: sio2
-#+attr_latex: :width 0.5\textwidth
+#+attr_latex: :width \textwidth
 #+attr_html: :width 500
 #+attr_org: :width 500
 [[./RefractiveIndexSiO2.png]]
 * List of Todos:
 ** TODO Write a loop for all wavelengths after it works for one.
 
+** TODO Then take even more wavelengths (rows)
 * Imports:
 #+BEGIN_SRC python :results output silent :tangle yes
   import numpy as np
@@ -40,11 +42,11 @@ Defining some variables for later use:
   n_air = 1  # refractive index of air
   rerange = 5  # upper limit for real part
   imrange = 1  # upper limit for imaginary part
-  i = 1  # only look at one wavelength (row in csv)
+  i = 0  # only look at one wavelength (row in csv)
 #+END_SRC
 
 * Read .csv-file:
-Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,n_S,k_S],...] (Skip columns 3 and 4)
+Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,n_S, k_S],...] (Skip columns 3 and 4)
   
 #+BEGIN_SRC python :results output silent :tangle yes
 csv = np.loadtxt(CSVFILE, usecols=(0,1,2,5,6),  delimiter=",", skiprows=1)
@@ -52,39 +54,44 @@ csv = np.loadtxt(CSVFILE, usecols=(0,1,2,5,6),  delimiter=",", skiprows=1)
 
 :DEBUG:
 The array looks like this:
-#+BEGIN_SRC python :results output table :exports both
-print(csv)
+#+BEGIN_SRC python :results value verbatim :exports both
+csv
 #+END_SRC
+
 #+RESULTS:
-| 300 |  55.2217535 |  84.37228319 | 2.6726 | 3.0375 |
-| 303 | 50.11187439 |   93.3085011 | 2.7346 | 3.0381 |
-| 306 | 46.35824553 |  98.43681392 | 2.7967 | 3.0368 |
-| 309 | 43.50539341 | 101.18051798 | 2.8588 | 3.0334 |
-| 312 | 41.29392865 | 102.19236832 | 2.9206 | 3.0279 |
-| 315 | 39.48751217 |    101.93002 | 2.9822 | 3.0205 |
-| 318 | 37.90308303 | 100.64846104 | 3.0435 | 3.0109 |
-| 321 | 36.47640803 |  98.54577151 | 3.1042 | 2.9994 |
-| 324 | 35.12615859 |  95.72242205 | 3.1644 | 2.9858 |
-:end:
+: [[300.          55.2217535   84.37228319   2.6726       3.0375    ]
+:  [303.          50.11187439  93.3085011    2.7346       3.0381    ]
+:  [306.          46.35824553  98.43681392   2.7967       3.0368    ]
+:  [309.          43.50539341 101.18051798   2.8588       3.0334    ]
+:  [312.          41.29392865 102.19236832   2.9206       3.0279    ]
+:  [315.          39.48751217 101.93002      2.9822       3.0205    ]
+:  [318.          37.90308303 100.64846104   3.0435       3.0109    ]
+:  [321.          36.47640803  98.54577151   3.1042       2.9994    ]
+:  [324.          35.12615859  95.72242205   3.1644       2.9858    ]]
+:END:
+
 * Calculate \rho
 ** Create a matrix containing every possible refractive index (n+ik):
+
+Change the last number in the "linspaces" to adjust the resolution.
+
 #+BEGIN_SRC python :results silent :tangle yes
-  lsp_re = np.linspace(0.1, rerange, 100001)
-  lsp_im = np.linspace(0.1, imrange, 11)
+  lsp_re = np.linspace(1, rerange, 1001)
+  lsp_im = np.linspace(0.01, imrange, 1001)
   re, im = np.meshgrid (lsp_re, lsp_im, copy=False)
-  n_L = 1j * im + re
+  n_L = 1j * np.round(im,6) + np.round(re,6)
   n_L = n_L.flatten() # create onedimensional array
 #+END_SRC
 
 :DEBUG:
 This gives the following matrix:
-#+BEGIN_SRC python :results output :exports both :tangle no
-  print(n_L)
+#+BEGIN_SRC python :results value verbatim :exports both :tangle no
+  n_L
 #+END_SRC
 
 #+RESULTS:
-: [0.1     +0.1j 0.100049+0.1j 0.100098+0.1j ... 4.999902+1.j  4.999951+1.j
-:  5.      +1.j ]
+: [1.   +0.01j 1.004+0.01j 1.008+0.01j ... 4.992+1.j   4.996+1.j
+:  5.   +1.j  ]
 
 :END:
 
@@ -97,7 +104,7 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 #+NAME: fig:snell
 #+ATTR_ORG: :width 500
 #+ATTR_HTML: :width 500
-#+ATTR_LATEX: :width 0.5\textwidth
+#+ATTR_LATEX: :width \textwidth
 #+ATTR_LATEX: :placement [H]
 [[./snell.jpg]]
 #+BEGIN_SRC python :results silent :tangle yes
@@ -149,8 +156,7 @@ Then call the above defined functions
 #+END_SRC
 
 :DEBUG:
-Debug:
-#+BEGIN_SRC python :results value scalar :tangle no :exports no 
+#+BEGIN_SRC python :results value scalar :tangle no :exports none
   # lambda_vac
   # phi_L
   # phi_S
@@ -163,11 +169,12 @@ Debug:
 #+END_SRC
 
 #+RESULTS:
-: [ 0.77162186+0.64751645j  0.77162693+0.64751608j  0.771632  +0.64751571j
-:  ... -2.85987088+0.81127643j -2.85984412+0.81124714j
-:  -2.85981736+0.81121784j]
+: [-0.25620166-0.45633166j -0.25294925-0.45740387j -0.24697376-0.46398616j
+:  ... -2.86422364+0.81598589j -2.86203231+0.81357857j
+:  -2.85984412+0.81118112j]
 
 :END:
+
 
 *** Identify the best fitting rho with \rho = tan(\psi) * e^i\Delta :
 
@@ -180,22 +187,23 @@ Debug:
   idx = np.argmin(diff)  # index of the minimum
   minimum = diff[idx]
   n = n_L[idx]
-  print("This gives us the refractive index n_L = ", n)
+  print("The layer has the refractive index n_L = ", n)
 #+END_SRC
 
 #+RESULTS:
-: This gives us the refractive index n_L =  (1.2174940000000003+0.1j)
+: The layer has the refractive index n_L =  (4.008+0.15157j)
 
 * Plot some things for checking results:
 
+If we use a high resolution, those plots are not showing much, thats why they are only showing the first 10000 values.
 ** Plot real and imaginary part of the created n_L matrix:
 
 Real part is blue, imaginary is red.
 
 #+BEGIN_SRC python :results file :tangle no :exports both
   fig = plt.figure()
-  plt.plot(np.real(n_L), c='b')
-  plt.plot(np.imag(n_L), c="r")
+  plt.plot(np.real(n_L[:10000]), c='b')
+  plt.plot(np.imag(n_L[:10000]), c="r")
   plt.savefig('n_L.png')
   './n_L.png'
 
@@ -203,22 +211,6 @@ Real part is blue, imaginary is red.
 
 #+RESULTS:
 [[file:./n_L.png]]
-
-** Plot of the difference between \rho_L and the given \rho and determined minimum:
-
-The difference is shown in blue, the red lines show the minimum.
-
-#+BEGIN_SRC python :results file :tangle no :exports both 
-  fig = plt.figure()
-  plt.axvline(idx, c='r')
-  plt.axhline(minimum, c='r')
-  plt.plot(diff)
-  plt.savefig('diff.png')
-  "./diff.png"
-#+END_SRC
-
-#+RESULTS:
-[[file:./diff.png]]
 
 ** Plot real and imaginary part of \rho_L
 
@@ -233,16 +225,32 @@ The difference is shown in blue, the red lines show the minimum.
 #+RESULTS:
 [[file:./rho_L.png]]
 
+** Plot of the difference between \rho_L and the given \rho and determined minimum:
+
+The difference is shown in blue, the red lines show the minimum.
+
+#+BEGIN_SRC python :results file :tangle no :exports both 
+  fig = plt.figure()
+  plt.axvline(idx, c='r')
+  plt.axhline(minimum, c='r')
+  plt.plot(diff[:idx+10000])
+  plt.savefig('diff.png')
+  "./diff.png"
+#+END_SRC
+
+#+RESULTS:
+[[file:./diff.png]]
+
 ** Plot refractive angle phi_L and n_L:
 
-n_L is shown in green, real part of n_L in blue, imaginary in red. 
+n_L is shown in green, real part of phi_L in blue, imaginary in red. 
 A relation between these should be visible.
 
 #+BEGIN_SRC python :results file :tangle no :exports both 
   fig = plt.figure()
-  plt.plot(np.real(phi_L), 'b')
-  plt.plot(np.imag(phi_L), 'r')
-  plt.plot(n_L, c='g')
+  plt.plot(np.real(phi_L[:5000]), 'b')
+  plt.plot(np.imag(phi_L[:5000]), 'r')
+  plt.plot(np.real(n_L[:5000]), c='g')
   plt.savefig('phi_L.png')
   "phi_L.png"
 #+END_SRC
