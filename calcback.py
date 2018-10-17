@@ -9,14 +9,14 @@ d_L = 300  # thickness of layer in nm
 n_air = 1  # refractive index of air
 rerange = 5  # upper limit for real part
 imrange = 1  # upper limit for imaginary part
-i = 1  # only look at one wavelength (row in csv)
+i = 0  # only look at one wavelength (row in csv)
 
 csv = np.loadtxt(CSVFILE, usecols=(0,1,2,5,6),  delimiter=",", skiprows=1)
 
-lsp_re = np.linspace(0.1, rerange, 100001)
-lsp_im = np.linspace(0.1, imrange, 11)
+lsp_re = np.linspace(1, rerange, 1001)
+lsp_im = np.linspace(0.01, imrange, 1001)
 re, im = np.meshgrid (lsp_re, lsp_im, copy=False)
-n_L = 1j * im + re
+n_L = 1j * np.round(im,6) + np.round(re,6)
 n_L = n_L.flatten() # create onedimensional array
 
 def snell(phi, n1, n2):
@@ -57,4 +57,4 @@ diff = abs(rho - rho_L)  # magnitude of complex number
 idx = np.argmin(diff)  # index of the minimum
 minimum = diff[idx]
 n = n_L[idx]
-print("This gives us the refractive index n_L = ", n)
+print("The layer has the refractive index n_L = ", n)
