@@ -1,4 +1,4 @@
-% Created 2018-10-17 Mi 17:38
+% Created 2018-10-17 Mi 17:56
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -34,25 +34,25 @@
 
 
 \section{What is this?}
-\label{sec:org41cfd18}
+\label{sec:org41c4bad}
 This is a script to get the complex refractive index \(n = n * ik\) from the ellipsometric parameters \(\Delta\) and \(\Psi\) I got from a simulation.
 The result for 300nm SiO\(_{\text{2}}\) should look like this:
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{./RefractiveIndexSiO2.png}
-\caption{\label{fig:orga0d4ae7}
+\caption{\label{fig:org4b083b8}
 Refractive index should look like this}
 \end{figure}
 \section{List of Todos:}
-\label{sec:orgdd2ce71}
+\label{sec:orgc3a46f2}
 \subsection{{\bfseries\sffamily TODO} Write a loop for all wavelengths after it works for one.}
-\label{sec:org4253924}
+\label{sec:orga4488b2}
 
 \subsection{{\bfseries\sffamily TODO} Then take even more wavelengths (rows)}
-\label{sec:org1a70d49}
+\label{sec:org84bcf45}
 \section{Imports:}
-\label{sec:org822dd54}
+\label{sec:orgd012462}
 \begin{verbatim}
 import numpy as np
 import matplotlib
@@ -61,7 +61,7 @@ import matplotlib.pyplot as plt
 \end{verbatim}
 
 \section{Defining some variables:}
-\label{sec:org1b7bbc9}
+\label{sec:org87bf4ff}
 Defining some variables for later use:
 
 \begin{verbatim}
@@ -75,7 +75,7 @@ i = 0  # only look at one wavelength (row in csv)
 \end{verbatim}
 
 \section{Read .csv-file:}
-\label{sec:org9bc78f5}
+\label{sec:orgcc12903}
 Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,n\(_{\text{S}}\), k\(_{\text{S}}\)],\ldots{}] (Skip columns 3 and 4)
 
 \begin{verbatim}
@@ -100,9 +100,9 @@ csv
 \end{verbatim}
 
 \section{Calculate \(\rho\)}
-\label{sec:org4de4882}
+\label{sec:org3c45e85}
 \subsection{Create a matrix containing every possible refractive index (n+ik):}
-\label{sec:org80021ca}
+\label{sec:org97318a6}
 
 Change the last number in the "linspaces" to adjust the resolution.
 
@@ -125,18 +125,18 @@ n_L
 \end{verbatim}
 
 \subsection{Calculate \(\rho\):}
-\label{sec:org5d8c938}
+\label{sec:org444b60f}
 \subsubsection{First we define some functions:}
-\label{sec:org82e60c1}
+\label{sec:orgb2c3d14}
 \begin{enumerate}
 \item Snell's Law to calculate the refractive angles:
-\label{sec:org82db8b0}
+\label{sec:orgbb519ca}
 Phi is the incident angle for the layer, n1 and n2 are refractive indices of first and second medium. Returns the angle of refraction.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{./snell.jpg}
-\caption{\label{fig:org79a5148}
+\caption{\label{fig:orgabff948}
 Snell's Law}
 \end{figure}
 \begin{verbatim}
@@ -147,7 +147,7 @@ def snell(phi, n1, n2):
 
 
 \item Calculate r\(_{\text{p}}\) and r\(_{\text{s}}\) with Fresnel equations:
-\label{sec:orgdd5ff0c}
+\label{sec:org3fc6f01}
 \begin{verbatim}
 def fresnel(n1, phi1, n2, phi2):
     """Takes refractive indices and angles of two layers to calculate the amplitude reflection coefficients"""
@@ -158,7 +158,7 @@ def fresnel(n1, phi1, n2, phi2):
 
 
 \item Calculate \(\rho\) for the layer with eq. 5.2 in Spectroscopic Ellipsometry \citenum{fujiwara2009spectroscopic}:
-\label{sec:org8983924}
+\label{sec:org62a86c4}
 \begin{verbatim}
 def calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac):
     beta = 2 * np.pi * d_L * n_L * np.cos(phi_L) / lambda_vac
@@ -171,7 +171,7 @@ def calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac):
 
 
 \subsubsection{Then we call these functions one after another to calculate \(\rho\):}
-\label{sec:org4140bbd}
+\label{sec:org9ab8f3a}
 Get refractive index of the substrate (n\(_{\text{S}}\)) and lambda from the csv:
 \begin{verbatim}
 lambda_vac = csv[i, 0]
@@ -193,7 +193,7 @@ rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac)
 
 
 \subsubsection{Identify the best fitting rho with \(\rho\) = tan(\(\psi\)) * e\(^{\text{i}\Delta}\) :}
-\label{sec:org0412a54}
+\label{sec:orgd3a1853}
 
 \begin{verbatim}
 # psi is in our csv-file at index 1, delta at index 2 at row "i" for lambda
@@ -212,11 +212,11 @@ The layer has the refractive index n_L =  (4.008+0.15157j)
 \end{verbatim}
 
 \section{Plot some things for checking results:}
-\label{sec:orga8b9e66}
+\label{sec:org3724f2e}
 
 If we use a high resolution, those plots are not showing much, thats why they are only showing the first 10000 values.
 \subsection{Plot real and imaginary part of the created n\(_{\text{L}}\) matrix:}
-\label{sec:org7918754}
+\label{sec:org2800f96}
 
 Real part is blue, imaginary is red.
 
@@ -234,7 +234,7 @@ plt.savefig('n_L.png')
 \end{center}
 
 \subsection{Plot real and imaginary part of \(\rho_{\text{L}}\)}
-\label{sec:orgc9d8cf9}
+\label{sec:orgf5fa55e}
 
 \begin{verbatim}
 fig = plt.figure()
@@ -249,7 +249,7 @@ plt.savefig('rho_L.png')
 \end{center}
 
 \subsection{Plot of the difference between \(\rho_{\text{L}}\) and the given \(\rho\) and determined minimum:}
-\label{sec:org2c6ddbd}
+\label{sec:orgfecaadc}
 
 The difference is shown in blue, the red lines show the minimum.
 
@@ -267,7 +267,7 @@ plt.savefig('diff.png')
 \end{center}
 
 \subsection{Plot refractive angle phi\(_{\text{L}}\) and n\(_{\text{L}}\):}
-\label{sec:orgf4eb4db}
+\label{sec:org6ab251a}
 
 n\(_{\text{L}}\) is shown in green, real part of phi\(_{\text{L}}\) in blue, imaginary in red. 
 A relation between these should be visible.

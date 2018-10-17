@@ -1,0 +1,24 @@
+#+TITLE: Calcback.org
+
+* What is this?
+
+This is a script to get the complex refractive index $n = n * ik$ from the ellipsometric parameters $\Delta$ and $\Psi$ I got from a simulation.
+The result for 300nm SiO_2 should look like this:
+
+#+CAPTION: Refractive index should look like this
+#+NAME: sio2
+#+attr_latex: :width \textwidth
+#+attr_html: :width 500
+#+attr_org: :width 500
+[[./RefractiveIndexSiO2.png]]
+* List of Todos:
+** TODO Write a loop for all wavelengths after it works for one.
+
+** TODO Then take even more wavelengths (rows)
+* Imports:
+#+BEGIN_SRC python :results output silent :tangle yes
+  import numpy as np
+  import matplotlib
+  matplotlib.use('Agg')
+  import matplotlib.pyplot as plt
+#+END_SRC 
