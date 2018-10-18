@@ -154,7 +154,7 @@ Then call the above defined functions
   # layer/substrate:
   rs_ls, rp_ls = fresnel(n_L, phi_L, n_S, phi_S)
 
-  rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, phi_L, lambda_vac, returnbeta=False)
+  rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, phi_L, lambda_vac)
 #+END_SRC
 
 #+RESULTS:
@@ -345,9 +345,18 @@ rp_lstest
 ** calc_rho():
 
 rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac)
-  
+ Just copied this from above with beta returned 
+#+BEGIN_SRC python :results silent :tangle yes
+  def calc_rhotest(rs_al, rp_al, rs_ls, rp_ls, d, n, phi, lambda_vac):
+      beta = 2 * np.pi * d * n * np.cos(phi) / lambda_vac
+      rp_L = (rp_al + rp_ls * np.exp(-2*1j*beta)) / (1 + rp_al * rp_ls * np.exp(-2 * 1j * beta))
+      rs_L = (rs_al + rs_ls * np.exp(-2*1j*beta)) / (1 + rs_al * rs_ls * np.exp(-2 * 1j * beta))
+      rho_L = rp_L / rs_L
+      return rho_L, beta
+#+END_SRC
+
   #+BEGIN_SRC python :export both :results value  
-    rhotest, betatest = calc_rho(rs_altest, rp_altest, rs_lstest, rp_lstest, 300, n_L[0], phi_Ltest, lambda_vac, returnbeta=True)
+    rhotest, betatest = calc_rhotest(rs_altest, rp_altest, rs_lstest, rp_lstest, 300, n_L[0], phi_Ltest, lambda_vac)
     betatest
   #+END_SRC
 
