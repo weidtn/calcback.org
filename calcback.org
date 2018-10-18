@@ -21,8 +21,9 @@ The result for 300nm SiO_2 should look like this:
 #+attr_org: :width 500
 [[./RefractiveIndexSiO2.png]]
 * List of Todos:
-** TODO Write a loop for all wavelengths after it works for one.
 
+** TODO DELTA IN RADIANS
+** TODO Write a loop for all wavelengths after it works for one.
 ** TODO Then take even more wavelengths (rows)
 * Imports:
 #+BEGIN_SRC python :results output silent :tangle yes
@@ -109,8 +110,9 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 [[./snell.jpg]]
 #+BEGIN_SRC python :results silent :tangle yes
   def snell(phi, n1, n2):
-      phi_ref = np.arcsin((np.sin(phi) * n1) / n2)
-      return phi_ref
+    """Calculates the refractive angle, parameters are incident angle phi, refractive index of first medium n1 and of second medium n2"""
+    phi_ref = np.arcsin((n1/n2)*np.sin(phi))
+    return phi_ref
 #+END_SRC   
 
 
@@ -126,12 +128,12 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 
 **** Calculate \rho for the layer with eq. 5.2 in Spectroscopic Ellipsometry citenum:fujiwara2009spectroscopic:
 #+BEGIN_SRC python :results silent :tangle yes
-  def calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac):
-      beta = 2 * np.pi * d_L * n_L * np.cos(phi_L) / lambda_vac
+  def calc_rho(rs_al, rp_al, rs_ls, rp_ls, d, n, phi, lambda_vac, returnbeta=False):
+      beta = 2 * np.pi * d * n * np.cos(phi) / lambda_vac
       rp_L = (rp_al + rp_ls * np.exp(-2*1j*beta)) / (1 + rp_al * rp_ls * np.exp(-2 * 1j * beta))
       rs_L = (rs_al + rs_ls * np.exp(-2*1j*beta)) / (1 + rs_al * rs_ls * np.exp(-2 * 1j * beta))
-      rho = rp_L / rs_L
-      return rho
+      rho_L = rp_L / rs_L
+      return rho_L
 #+END_SRC
 
 
@@ -143,7 +145,7 @@ Get refractive index of the substrate (n_S) and lambda from the csv:
 #+END_SRC
 
 Then call the above defined functions
-#+BEGIN_SRC python :results output silent :tangle yes
+#+BEGIN_SRC python :results output :tangle yes
   phi_L = snell(phi_i, n_air, n_L)
   phi_S = snell(phi_L, n_L, n_S)
   # Fresnel equations:
@@ -152,8 +154,10 @@ Then call the above defined functions
   # layer/substrate:
   rs_ls, rp_ls = fresnel(n_L, phi_L, n_S, phi_S)
 
-  rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac)
+  rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, phi_L, lambda_vac, returnbeta=False)
 #+END_SRC
+
+#+RESULTS:
 
 :DEBUG:
 #+BEGIN_SRC python :results value scalar :tangle no :exports none
@@ -164,14 +168,12 @@ Then call the above defined functions
   # rp_al
   # rs_ls
   # rp_ls
-  rho_L
+  type(rho_L)
   # csv[:,0] # list of lambdas
 #+END_SRC
 
 #+RESULTS:
-: [-0.25620166-0.45633166j -0.25294925-0.45740387j -0.24697376-0.46398616j
-:  ... -2.86422364+0.81598589j -2.86203231+0.81357857j
-:  -2.85984412+0.81118112j]
+: <class 'numpy.ndarray'>
 
 :END:
 
@@ -180,18 +182,20 @@ Then call the above defined functions
 
 #+BEGIN_SRC python :results output :exports both :tangle yes
   # psi is in our csv-file at index 1, delta at index 2 at row "i" for lambda
-  psi = csv[i][1]
-  delta = csv[i][2]
-  rho = np.tan(psi) * np.exp(1j * delta)
-  diff = abs(rho - rho_L)  # magnitude of complex number
+  psi = csv[i][1] * (np.pi/180)
+  delta = csv[i][2] * (np.pi/180)
+  rho_giv = np.tan(psi) * np.exp(1j * delta)
+  diff = abs(rho_giv - rho_L)  # magnitude of complex number
   idx = np.argmin(diff)  # index of the minimum
   minimum = diff[idx]
   n = n_L[idx]
-  print("The layer has the refractive index n_L = ", n)
+  print("At lambda = ", lambda_vac)
+  print("The layer has the refractive index n_L = " , n)
 #+END_SRC
 
 #+RESULTS:
-: The layer has the refractive index n_L =  (4.008+0.15157j)
+: At lambda =  300.0
+: The layer has the refractive index n_L =  (1.504+0.10108j)
 
 * Plot some things for checking results:
 
@@ -258,4 +262,104 @@ A relation between these should be visible.
 #+RESULTS:
 [[file:phi_L.png]]
 
-bibliography:forschungspraktikum.bib
+
+* Testing: 
+
+Testing with constant n_L, phi_i at i=0
+  #+BEGIN_SRC python :results table :export none
+   [("n_L[0]",n_L[0]),("phi_i",phi_i)]
+  #+END_SRC
+
+  #+RESULTS:
+  | n_L[0] |          (1+0.01j) |
+  | phi_i  | 1.2217304763960306 |
+
+** snell():
+
+#+BEGIN_SRC python :results value :export both
+  phi_Ltest = snell(phi_i, n_air, n_L[0])
+  phi_Ltest
+#+END_SRC
+
+#+RESULTS:
+| 1.2204293562148987-0.02737077533152331j |
+should be: (1.220429-0.02737074 i)
+
+#+BEGIN_SRC python :export both
+("n_S",n_S)
+#+END_SRC
+
+#+RESULTS:
+| n_S | (2.6726+3.0375j) |
+
+#+BEGIN_SRC python :exports both :results value
+  phi_Stest = snell(1.220429-0.0273775j,n_L[0],n_S)
+  phi_Stest
+#+END_SRC
+
+#+RESULTS:
+| 0.15167146706201226-0.1754944190504326j |
+should be: (0.151671-0.175494i)
+
+  
+  
+** fresnel():
+
+  # Fresnel equations:
+  # air/layer:
+  rs_al, rp_al = fresnel(n_air, phi_i, n_L, phi_L)
+  # layer/substrate:
+  rs_ls, rp_ls = fresnel(n_L, phi_L, n_S, phi_S)
+
+#+BEGIN_SRC python :export both :results value
+  rs_altest, rp_altest = fresnel(n_air, phi_i, n_L[0], phi_Ltest)
+  rs_altest
+#+END_SRC
+
+#+RESULTS:
+| -0.0033999254327574746-0.04239424576449757j |
+should be: (-0.003398-0.04239i)
+#+BEGIN_SRC python :export both :results value
+rp_altest
+#+END_SRC
+
+#+RESULTS:
+| -0.0033473348657266995-0.03238064466694647j |
+should be: 
+
+#+BEGIN_SRC python :export both :results value
+  rs_lstest, rp_lstest = fresnel(n_L[0], phi_Ltest, n_S, phi_Stest)
+  rs_lstest
+#+END_SRC
+
+#+RESULTS:
+| -0.8814233130816392-0.10701715470726722j |
+
+#+BEGIN_SRC python
+rp_lstest
+#+END_SRC
+
+#+RESULTS:
+| 0.1977200465339483+0.4600671830365366j |
+
+** calc_rho():
+
+rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac)
+  
+  #+BEGIN_SRC python :export both :results value  
+    rhotest, betatest = calc_rho(rs_altest, rp_altest, rs_lstest, rp_lstest, 300, n_L[0], phi_Ltest, lambda_vac, returnbeta=True)
+    betatest
+  #+END_SRC
+
+  #+RESULTS:
+  | 2.1558486861854713+0.18312239563626334j |
+  should be: 2.1558487+0.18312240i
+  
+ #+BEGIN_SRC python :export both :results value
+   rhotest 
+ #+END_SRC 
+
+ #+RESULTS:
+ | -0.2562015784819146-0.456331697173584j |
+
+*  bibliography:forschungspraktikum.bib
