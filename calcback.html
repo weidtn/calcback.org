@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-10-17 Mi 17:49 -->
+<!-- 2018-10-18 Do 19:06 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Calcback</title>
@@ -256,37 +256,45 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org85f83fe">1. What is this?</a></li>
-<li><a href="#org3522f4e">2. List of Todos:</a>
+<li><a href="#orgd02e000">1. What is this?</a></li>
+<li><a href="#orgac658bb">2. List of Todos:</a>
 <ul>
-<li><a href="#orgd396099">2.1. <span class="todo TODO">TODO</span> Write a loop for all wavelengths after it works for one.</a></li>
-<li><a href="#orgade43f2">2.2. <span class="todo TODO">TODO</span> Then take even more wavelengths (rows)</a></li>
+<li><a href="#org89ee609">2.1. <span class="todo TODO">TODO</span> Write a loop for all wavelengths after it works for one.</a></li>
+<li><a href="#orgd2f69a4">2.2. <span class="todo TODO">TODO</span> Then take even more wavelengths (rows)</a></li>
 </ul>
 </li>
-<li><a href="#orgbc8f76b">3. Imports:</a></li>
-<li><a href="#org229a24b">4. Defining some variables:</a></li>
-<li><a href="#orgb191354">5. Read .csv-file:</a></li>
-<li><a href="#org002f48e">6. Calculate &rho;</a>
+<li><a href="#org5f11176">3. Imports:</a></li>
+<li><a href="#org00a0e21">4. Defining some variables:</a></li>
+<li><a href="#orgdb4859b">5. Read .csv-file:</a></li>
+<li><a href="#org9ef8b25">6. Calculate &rho;</a>
 <ul>
-<li><a href="#org70a7a7e">6.1. Create a matrix containing every possible refractive index (n+ik):</a></li>
-<li><a href="#org415c41b">6.2. Calculate &rho;:</a></li>
+<li><a href="#org5f8c4ae">6.1. Create a matrix containing every possible refractive index (n+ik):</a></li>
+<li><a href="#org8e4f5f6">6.2. Calculate &rho;:</a></li>
 </ul>
 </li>
-<li><a href="#org937b045">7. Plot some things for checking results:</a>
+<li><a href="#org4b926a6">7. Plot some things for checking results:</a>
 <ul>
-<li><a href="#orge552379">7.1. Plot real and imaginary part of the created n<sub>L</sub> matrix:</a></li>
-<li><a href="#orgd21270e">7.2. Plot real and imaginary part of &rho;<sub>L</sub></a></li>
-<li><a href="#org1149c68">7.3. Plot of the difference between &rho;<sub>L</sub> and the given &rho; and determined minimum:</a></li>
-<li><a href="#org72b2780">7.4. Plot refractive angle phi<sub>L</sub> and n<sub>L</sub>:</a></li>
+<li><a href="#org2e670d9">7.1. Plot real and imaginary part of the created n<sub>L</sub> matrix:</a></li>
+<li><a href="#orgcb81d2c">7.2. Plot real and imaginary part of &rho;<sub>L</sub></a></li>
+<li><a href="#org8e41ead">7.3. Plot of the difference between &rho;<sub>L</sub> and the given &rho; and determined minimum:</a></li>
+<li><a href="#orgd007ead">7.4. Plot refractive angle phi<sub>L</sub> and n<sub>L</sub>:</a></li>
 </ul>
 </li>
+<li><a href="#orge1a312c">8. Testing:</a>
+<ul>
+<li><a href="#org4df4ac5">8.1. snell():</a></li>
+<li><a href="#org5c4a2ea">8.2. fresnel():</a></li>
+<li><a href="#orge11f03f">8.3. calc<sub>rho</sub>():</a></li>
+</ul>
+</li>
+<li><a href="#org4d2f7a2">9. bibliography:forschungspraktikum.bib</a></li>
 </ul>
 </div>
 </div>
 
 
-<div id="outline-container-org85f83fe" class="outline-2">
-<h2 id="org85f83fe"><span class="section-number-2">1</span> What is this?</h2>
+<div id="outline-container-orgd02e000" class="outline-2">
+<h2 id="orgd02e000"><span class="section-number-2">1</span> What is this?</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 This is a script to get the complex refractive index \(n = n * ik\) from the ellipsometric parameters \(\Delta\) and \(\Psi\) I got from a simulation.
@@ -294,27 +302,26 @@ The result for 300nm SiO<sub>2</sub> should look like this:
 </p>
 
 
-<div id="org3a7a4c1" class="figure">
+<div id="orgd1d8078" class="figure">
 <p><img src="./RefractiveIndexSiO2.png" alt="RefractiveIndexSiO2.png" width="500" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Refractive index should look like this</p>
 </div>
 </div>
 </div>
-<div id="outline-container-org3522f4e" class="outline-2">
-<h2 id="org3522f4e"><span class="section-number-2">2</span> List of Todos:</h2>
+<div id="outline-container-orgac658bb" class="outline-2">
+<h2 id="orgac658bb"><span class="section-number-2">2</span> List of Todos:</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgd396099" class="outline-3">
-<h3 id="orgd396099"><span class="section-number-3">2.1</span> <span class="todo TODO">TODO</span> Write a loop for all wavelengths after it works for one.</h3>
+<div id="outline-container-org89ee609" class="outline-3">
+<h3 id="org89ee609"><span class="section-number-3">2.1</span> <span class="todo TODO">TODO</span> Write a loop for all wavelengths after it works for one.</h3>
 </div>
-
-<div id="outline-container-orgade43f2" class="outline-3">
-<h3 id="orgade43f2"><span class="section-number-3">2.2</span> <span class="todo TODO">TODO</span> Then take even more wavelengths (rows)</h3>
+<div id="outline-container-orgd2f69a4" class="outline-3">
+<h3 id="orgd2f69a4"><span class="section-number-3">2.2</span> <span class="todo TODO">TODO</span> Then take even more wavelengths (rows)</h3>
 </div>
 </div>
-<div id="outline-container-orgbc8f76b" class="outline-2">
-<h2 id="orgbc8f76b"><span class="section-number-2">3</span> Imports:</h2>
+<div id="outline-container-org5f11176" class="outline-2">
+<h2 id="org5f11176"><span class="section-number-2">3</span> Imports:</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #0000FF;">import</span> numpy <span style="color: #0000FF;">as</span> np
@@ -326,8 +333,8 @@ matplotlib.use<span style="color: #707183;">(</span><span style="color: #008000;
 </div>
 </div>
 
-<div id="outline-container-org229a24b" class="outline-2">
-<h2 id="org229a24b"><span class="section-number-2">4</span> Defining some variables:</h2>
+<div id="outline-container-org00a0e21" class="outline-2">
+<h2 id="org00a0e21"><span class="section-number-2">4</span> Defining some variables:</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Defining some variables for later use:
@@ -346,8 +353,8 @@ Defining some variables for later use:
 </div>
 </div>
 
-<div id="outline-container-orgb191354" class="outline-2">
-<h2 id="orgb191354"><span class="section-number-2">5</span> Read .csv-file:</h2>
+<div id="outline-container-orgdb4859b" class="outline-2">
+<h2 id="orgdb4859b"><span class="section-number-2">5</span> Read .csv-file:</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,n<sub>S</sub>, k<sub>S</sub>],&#x2026;] (Skip columns 3 and 4)
@@ -381,12 +388,12 @@ The array looks like this:
 </div>
 </div>
 
-<div id="outline-container-org002f48e" class="outline-2">
-<h2 id="org002f48e"><span class="section-number-2">6</span> Calculate &rho;</h2>
+<div id="outline-container-org9ef8b25" class="outline-2">
+<h2 id="org9ef8b25"><span class="section-number-2">6</span> Calculate &rho;</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-org70a7a7e" class="outline-3">
-<h3 id="org70a7a7e"><span class="section-number-3">6.1</span> Create a matrix containing every possible refractive index (n+ik):</h3>
+<div id="outline-container-org5f8c4ae" class="outline-3">
+<h3 id="org5f8c4ae"><span class="section-number-3">6.1</span> Create a matrix containing every possible refractive index (n+ik):</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 Change the last number in the "linspaces" to adjust the resolution.
@@ -417,38 +424,39 @@ This gives the following matrix:
 </div>
 </div>
 
-<div id="outline-container-org415c41b" class="outline-3">
-<h3 id="org415c41b"><span class="section-number-3">6.2</span> Calculate &rho;:</h3>
+<div id="outline-container-org8e4f5f6" class="outline-3">
+<h3 id="org8e4f5f6"><span class="section-number-3">6.2</span> Calculate &rho;:</h3>
 <div class="outline-text-3" id="text-6-2">
 </div>
-<div id="outline-container-orga0aed0a" class="outline-4">
-<h4 id="orga0aed0a"><span class="section-number-4">6.2.1</span> First we define some functions:</h4>
+<div id="outline-container-org5a658d6" class="outline-4">
+<h4 id="org5a658d6"><span class="section-number-4">6.2.1</span> First we define some functions:</h4>
 <div class="outline-text-4" id="text-6-2-1">
 </div>
 <ol class="org-ol">
-<li><a id="org62f810c"></a>Snell's Law to calculate the refractive angles:<br />
+<li><a id="org7cb102a"></a>Snell's Law to calculate the refractive angles:<br />
 <div class="outline-text-5" id="text-6-2-1-1">
 <p>
 Phi is the incident angle for the layer, n1 and n2 are refractive indices of first and second medium. Returns the angle of refraction.
 </p>
 
 
-<div id="org3166c45" class="figure">
+<div id="org073d927" class="figure">
 <p><img src="./snell.jpg" alt="snell.jpg" width="500" />
 </p>
 <p><span class="figure-number">Figure 2: </span>Snell's Law</p>
 </div>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #0000FF;">def</span> <span style="color: #006699;">snell</span><span style="color: #707183;">(</span>phi, n1, n2<span style="color: #707183;">)</span>:
-    <span style="color: #BA36A5;">phi_ref</span> = np.arcsin<span style="color: #707183;">(</span><span style="color: #7388D6;">(</span>np.sin<span style="color: #909183;">(</span>phi<span style="color: #909183;">)</span> * n1<span style="color: #7388D6;">)</span> / n2<span style="color: #707183;">)</span>
-    <span style="color: #0000FF;">return</span> phi_ref
+  <span style="color: #036A07;">"""Calculates the refractive angle, parameters are incident angle phi, refractive index of first medium n1 and of second medium n2"""</span>
+  <span style="color: #BA36A5;">phi_ref</span> = np.arcsin<span style="color: #707183;">(</span><span style="color: #7388D6;">(</span>n1/n2<span style="color: #7388D6;">)</span>*np.sin<span style="color: #7388D6;">(</span>phi<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+  <span style="color: #0000FF;">return</span> phi_ref
 </pre>
 </div>
 </div>
 </li>
 
 
-<li><a id="org134abfa"></a>Calculate r<sub>p</sub> and r<sub>s</sub> with Fresnel equations:<br />
+<li><a id="orgf1f57df"></a>Calculate r<sub>p</sub> and r<sub>s</sub> with Fresnel equations:<br />
 <div class="outline-text-5" id="text-6-2-1-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #0000FF;">def</span> <span style="color: #006699;">fresnel</span><span style="color: #707183;">(</span>n1, phi1, n2, phi2<span style="color: #707183;">)</span>:
@@ -462,15 +470,15 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 </li>
 
 
-<li><a id="org4bf7722"></a>Calculate &rho; for the layer with eq. 5.2 in Spectroscopic Ellipsometry <a class='org-ref-reference' href="#fujiwara2009spectroscopic">fujiwara2009spectroscopic</a>:<br />
+<li><a id="orgf6556e6"></a>Calculate &rho; for the layer with eq. 5.2 in Spectroscopic Ellipsometry <a class='org-ref-reference' href="#fujiwara2009spectroscopic">fujiwara2009spectroscopic</a>:<br />
 <div class="outline-text-5" id="text-6-2-1-3">
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #0000FF;">def</span> <span style="color: #006699;">calc_rho</span><span style="color: #707183;">(</span>rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac<span style="color: #707183;">)</span>:
-    <span style="color: #BA36A5;">beta</span> = <span style="color: #D0372D;">2</span> * np.pi * d_L * n_L * np.cos<span style="color: #707183;">(</span>phi_L<span style="color: #707183;">)</span> / lambda_vac
+<pre class="src src-python"><span style="color: #0000FF;">def</span> <span style="color: #006699;">calc_rho</span><span style="color: #707183;">(</span>rs_al, rp_al, rs_ls, rp_ls, d, n, phi, lambda_vac, returnbeta=<span style="color: #D0372D;">False</span><span style="color: #707183;">)</span>:
+    <span style="color: #BA36A5;">beta</span> = <span style="color: #D0372D;">2</span> * np.pi * d * n * np.cos<span style="color: #707183;">(</span>phi<span style="color: #707183;">)</span> / lambda_vac
     <span style="color: #BA36A5;">rp_L</span> = <span style="color: #707183;">(</span>rp_al + rp_ls * np.exp<span style="color: #7388D6;">(</span>-<span style="color: #D0372D;">2</span>*<span style="color: #D0372D;">1j</span>*beta<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span> / <span style="color: #707183;">(</span><span style="color: #D0372D;">1</span> + rp_al * rp_ls * np.exp<span style="color: #7388D6;">(</span>-<span style="color: #D0372D;">2</span> * <span style="color: #D0372D;">1j</span> * beta<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
     <span style="color: #BA36A5;">rs_L</span> = <span style="color: #707183;">(</span>rs_al + rs_ls * np.exp<span style="color: #7388D6;">(</span>-<span style="color: #D0372D;">2</span>*<span style="color: #D0372D;">1j</span>*beta<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span> / <span style="color: #707183;">(</span><span style="color: #D0372D;">1</span> + rs_al * rs_ls * np.exp<span style="color: #7388D6;">(</span>-<span style="color: #D0372D;">2</span> * <span style="color: #D0372D;">1j</span> * beta<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
-    <span style="color: #BA36A5;">rho</span> = rp_L / rs_L
-    <span style="color: #0000FF;">return</span> rho
+    <span style="color: #BA36A5;">rho_L</span> = rp_L / rs_L
+    <span style="color: #0000FF;">return</span> rho_L
 </pre>
 </div>
 </div>
@@ -479,15 +487,15 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 </div>
 
 
-<div id="outline-container-org9fdfe54" class="outline-4">
-<h4 id="org9fdfe54"><span class="section-number-4">6.2.2</span> Then we call these functions one after another to calculate &rho;:</h4>
+<div id="outline-container-orgd7f6c37" class="outline-4">
+<h4 id="orgd7f6c37"><span class="section-number-4">6.2.2</span> Then we call these functions one after another to calculate &rho;:</h4>
 <div class="outline-text-4" id="text-6-2-2">
 <p>
 Get refractive index of the substrate (n<sub>S</sub>) and lambda from the csv:
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #BA36A5;">lambda_vac</span> = csv<span style="color: #707183;">[</span>i, <span style="color: #D0372D;">0</span><span style="color: #707183;">]</span>
-<span style="color: #BA36A5;">n_S</span> = <span style="color: #707183;">(</span>csv<span style="color: #7388D6;">[</span>i, <span style="color: #D0372D;">3</span><span style="color: #7388D6;">]</span> + <span style="color: #D0372D;">1j</span> * csv<span style="color: #7388D6;">[</span>i, <span style="color: #D0372D;">4</span><span style="color: #7388D6;">]</span><span style="color: #707183;">)</span>
+<pre class="src src-python"><span style="color: #BA36A5;">lambda_vac</span> = csv<span style="color: #707183;">[</span>i<span style="color: #707183;">][</span><span style="color: #D0372D;">0</span><span style="color: #707183;">]</span>
+<span style="color: #BA36A5;">n_S</span> = <span style="color: #707183;">(</span>csv<span style="color: #7388D6;">[</span>i<span style="color: #7388D6;">][</span><span style="color: #D0372D;">3</span><span style="color: #7388D6;">]</span> + <span style="color: #D0372D;">1j</span> * csv<span style="color: #7388D6;">[</span>i<span style="color: #7388D6;">][</span><span style="color: #D0372D;">4</span><span style="color: #7388D6;">]</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -503,31 +511,33 @@ Then call the above defined functions
 <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">layer/substrate:</span>
 <span style="color: #BA36A5;">rs_ls</span>, <span style="color: #BA36A5;">rp_ls</span> = fresnel<span style="color: #707183;">(</span>n_L, phi_L, n_S, phi_S<span style="color: #707183;">)</span>
 
-<span style="color: #BA36A5;">rho_L</span> = calc_rho<span style="color: #707183;">(</span>rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac<span style="color: #707183;">)</span>
+<span style="color: #BA36A5;">rho_L</span> = calc_rho<span style="color: #707183;">(</span>rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, phi_L, lambda_vac<span style="color: #707183;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
 
-<div id="outline-container-orgc44aab7" class="outline-4">
-<h4 id="orgc44aab7"><span class="section-number-4">6.2.3</span> Identify the best fitting rho with &rho; = tan(&psi;) * e<sup>i&Delta;</sup> :</h4>
+<div id="outline-container-org4005c06" class="outline-4">
+<h4 id="org4005c06"><span class="section-number-4">6.2.3</span> Identify the best fitting rho with &rho; = tan(&psi;) * e<sup>i&Delta;</sup> :</h4>
 <div class="outline-text-4" id="text-6-2-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">psi is in our csv-file at index 1, delta at index 2 at row "i" for lambda</span>
-<span style="color: #BA36A5;">psi</span> = csv<span style="color: #707183;">[</span>i<span style="color: #707183;">][</span><span style="color: #D0372D;">1</span><span style="color: #707183;">]</span>
-<span style="color: #BA36A5;">delta</span> = csv<span style="color: #707183;">[</span>i<span style="color: #707183;">][</span><span style="color: #D0372D;">2</span><span style="color: #707183;">]</span>
-<span style="color: #BA36A5;">rho</span> = np.tan<span style="color: #707183;">(</span>psi<span style="color: #707183;">)</span> * np.exp<span style="color: #707183;">(</span><span style="color: #D0372D;">1j</span> * delta<span style="color: #707183;">)</span>
-<span style="color: #BA36A5;">diff</span> = <span style="color: #006FE0;">abs</span><span style="color: #707183;">(</span>rho - rho_L<span style="color: #707183;">)</span>  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">magnitude of complex number</span>
+<span style="color: #BA36A5;">psi</span> = csv<span style="color: #707183;">[</span>i<span style="color: #707183;">][</span><span style="color: #D0372D;">1</span><span style="color: #707183;">]</span> * <span style="color: #707183;">(</span>np.pi/<span style="color: #D0372D;">180</span><span style="color: #707183;">)</span>
+<span style="color: #BA36A5;">delta</span> = csv<span style="color: #707183;">[</span>i<span style="color: #707183;">][</span><span style="color: #D0372D;">2</span><span style="color: #707183;">]</span> * <span style="color: #707183;">(</span>np.pi/<span style="color: #D0372D;">180</span><span style="color: #707183;">)</span>
+<span style="color: #BA36A5;">rho_giv</span> = np.tan<span style="color: #707183;">(</span>psi<span style="color: #707183;">)</span> * np.exp<span style="color: #707183;">(</span><span style="color: #D0372D;">1j</span> * delta<span style="color: #707183;">)</span>
+<span style="color: #BA36A5;">diff</span> = <span style="color: #006FE0;">abs</span><span style="color: #707183;">(</span>rho_giv - rho_L<span style="color: #707183;">)</span>  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">magnitude of complex number</span>
 <span style="color: #BA36A5;">idx</span> = np.argmin<span style="color: #707183;">(</span>diff<span style="color: #707183;">)</span>  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">index of the minimum</span>
 <span style="color: #BA36A5;">minimum</span> = diff<span style="color: #707183;">[</span>idx<span style="color: #707183;">]</span>
 <span style="color: #BA36A5;">n</span> = n_L<span style="color: #707183;">[</span>idx<span style="color: #707183;">]</span>
-<span style="color: #0000FF;">print</span><span style="color: #707183;">(</span><span style="color: #008000;">"The layer has the refractive index n_L = "</span>, n<span style="color: #707183;">)</span>
+<span style="color: #0000FF;">print</span><span style="color: #707183;">(</span><span style="color: #008000;">"At lambda = "</span>, lambda_vac<span style="color: #707183;">)</span>
+<span style="color: #0000FF;">print</span><span style="color: #707183;">(</span><span style="color: #008000;">"the layer has the refractive index n_L = "</span> , n<span style="color: #707183;">)</span>
 </pre>
 </div>
 
 <pre class="example">
-The layer has the refractive index n_L =  (4.008+0.15157j)
+At lambda =  300.0
+the layer has the refractive index n_L =  (1.504+0.10108j)
 
 </pre>
 </div>
@@ -535,15 +545,15 @@ The layer has the refractive index n_L =  (4.008+0.15157j)
 </div>
 </div>
 
-<div id="outline-container-org937b045" class="outline-2">
-<h2 id="org937b045"><span class="section-number-2">7</span> Plot some things for checking results:</h2>
+<div id="outline-container-org4b926a6" class="outline-2">
+<h2 id="org4b926a6"><span class="section-number-2">7</span> Plot some things for checking results:</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 If we use a high resolution, those plots are not showing much, thats why they are only showing the first 10000 values.
 </p>
 </div>
-<div id="outline-container-orge552379" class="outline-3">
-<h3 id="orge552379"><span class="section-number-3">7.1</span> Plot real and imaginary part of the created n<sub>L</sub> matrix:</h3>
+<div id="outline-container-org2e670d9" class="outline-3">
+<h3 id="org2e670d9"><span class="section-number-3">7.1</span> Plot real and imaginary part of the created n<sub>L</sub> matrix:</h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 Real part is blue, imaginary is red.
@@ -567,8 +577,8 @@ plt.savefig<span style="color: #707183;">(</span><span style="color: #008000;">'
 </div>
 </div>
 
-<div id="outline-container-orgd21270e" class="outline-3">
-<h3 id="orgd21270e"><span class="section-number-3">7.2</span> Plot real and imaginary part of &rho;<sub>L</sub></h3>
+<div id="outline-container-orgcb81d2c" class="outline-3">
+<h3 id="orgcb81d2c"><span class="section-number-3">7.2</span> Plot real and imaginary part of &rho;<sub>L</sub></h3>
 <div class="outline-text-3" id="text-7-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #BA36A5;">fig</span> = plt.figure<span style="color: #707183;">()</span>
@@ -587,8 +597,8 @@ plt.savefig<span style="color: #707183;">(</span><span style="color: #008000;">'
 </div>
 </div>
 
-<div id="outline-container-org1149c68" class="outline-3">
-<h3 id="org1149c68"><span class="section-number-3">7.3</span> Plot of the difference between &rho;<sub>L</sub> and the given &rho; and determined minimum:</h3>
+<div id="outline-container-org8e41ead" class="outline-3">
+<h3 id="org8e41ead"><span class="section-number-3">7.3</span> Plot of the difference between &rho;<sub>L</sub> and the given &rho; and determined minimum:</h3>
 <div class="outline-text-3" id="text-7-3">
 <p>
 The difference is shown in blue, the red lines show the minimum.
@@ -612,8 +622,8 @@ plt.savefig<span style="color: #707183;">(</span><span style="color: #008000;">'
 </div>
 </div>
 
-<div id="outline-container-org72b2780" class="outline-3">
-<h3 id="org72b2780"><span class="section-number-3">7.4</span> Plot refractive angle phi<sub>L</sub> and n<sub>L</sub>:</h3>
+<div id="outline-container-orgd007ead" class="outline-3">
+<h3 id="orgd007ead"><span class="section-number-3">7.4</span> Plot refractive angle phi<sub>L</sub> and n<sub>L</sub>:</h3>
 <div class="outline-text-3" id="text-7-4">
 <p>
 n<sub>L</sub> is shown in green, real part of phi<sub>L</sub> in blue, imaginary in red. 
@@ -635,19 +645,149 @@ plt.savefig<span style="color: #707183;">(</span><span style="color: #008000;">'
 <p><img src="phi_L.png" alt="phi_L.png" />
 </p>
 </div>
+</div>
+</div>
+</div>
 
+
+<div id="outline-container-orge1a312c" class="outline-2">
+<h2 id="orge1a312c"><span class="section-number-2">8</span> Testing:</h2>
+<div class="outline-text-2" id="text-8">
 <p>
-<h1 class='org-ref-bib-h1'>Bibliography</h1>
-<ul class='org-ref-bib'><li><a id="fujiwara2009spectroscopic">[fujiwara2009spectroscopic]</a> <a name="fujiwara2009spectroscopic"></a>Fujiwara, Spectroscopic ellipsometry : principles and applications, (2009).</li>
-</ul>
+Testing with constant n<sub>L</sub>, phi<sub>i</sub> at i=0
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #707183;">[</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"n_L[0]"</span>,n_L<span style="color: #909183;">[</span><span style="color: #D0372D;">0</span><span style="color: #909183;">]</span><span style="color: #7388D6;">)</span>,<span style="color: #7388D6;">(</span><span style="color: #008000;">"phi_i"</span>,phi_i<span style="color: #7388D6;">)</span><span style="color: #707183;">]</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org4df4ac5" class="outline-3">
+<h3 id="org4df4ac5"><span class="section-number-3">8.1</span> snell():</h3>
+<div class="outline-text-3" id="text-8-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #BA36A5;">phi_Ltest</span> = snell<span style="color: #707183;">(</span>phi_i, n_air, n_L<span style="color: #7388D6;">[</span><span style="color: #D0372D;">0</span><span style="color: #7388D6;">]</span><span style="color: #707183;">)</span>
+phi_Ltest
+</pre>
+</div>
+<p>
+should be: (1.220429-0.02737074 i)
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #707183;">(</span><span style="color: #036A07;">"n_S"</span>,n_S<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #BA36A5;">phi_Stest</span> = snell<span style="color: #707183;">(</span><span style="color: #D0372D;">1</span>.<span style="color: #D0372D;">220429</span>-<span style="color: #D0372D;">0</span>.<span style="color: #D0372D;">0273775j</span>,n_L<span style="color: #7388D6;">[</span><span style="color: #D0372D;">0</span><span style="color: #7388D6;">]</span>,n_S<span style="color: #707183;">)</span>
+phi_Stest
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">0.15167146706201226-0.1754944190504326j</td>
+</tr>
+</tbody>
+</table>
+<p>
+should be: (0.151671-0.175494i)
 </p>
 </div>
 </div>
+
+
+
+<div id="outline-container-org5c4a2ea" class="outline-3">
+<h3 id="org5c4a2ea"><span class="section-number-3">8.2</span> fresnel():</h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+rs<sub>al</sub>, rp<sub>al</sub> = fresnel(n<sub>air</sub>, phi<sub>i</sub>, n<sub>L</sub>, phi<sub>L</sub>)
+</p>
+
+<p>
+rs<sub>ls</sub>, rp<sub>ls</sub> = fresnel(n<sub>L</sub>, phi<sub>L</sub>, n<sub>S</sub>, phi<sub>S</sub>)
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #BA36A5;">rs_altest</span>, <span style="color: #BA36A5;">rp_altest</span> = fresnel<span style="color: #707183;">(</span>n_air, phi_i, n_L<span style="color: #7388D6;">[</span><span style="color: #D0372D;">0</span><span style="color: #7388D6;">]</span>, phi_Ltest<span style="color: #707183;">)</span>
+rs_altest
+</pre>
+</div>
+<p>
+should be: (-0.003398-0.04239i)
+</p>
+<div class="org-src-container">
+<pre class="src src-python">rp_altest
+</pre>
+</div>
+<p>
+should be: 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #BA36A5;">rs_lstest</span>, <span style="color: #BA36A5;">rp_lstest</span> = fresnel<span style="color: #707183;">(</span>n_L<span style="color: #7388D6;">[</span><span style="color: #D0372D;">0</span><span style="color: #7388D6;">]</span>, phi_Ltest, n_S, phi_Stest<span style="color: #707183;">)</span>
+rs_lstest
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-python">rp_lstest
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge11f03f" class="outline-3">
+<h3 id="orge11f03f"><span class="section-number-3">8.3</span> calc<sub>rho</sub>():</h3>
+<div class="outline-text-3" id="text-8-3">
+<p>
+rho<sub>L</sub> = calc<sub>rho</sub>(rs<sub>al</sub>, rp<sub>al</sub>, rs<sub>ls</sub>, rp<sub>ls</sub>, d<sub>L</sub>, n<sub>L</sub>, lambda<sub>vac</sub>)
+ Just copied this from above with beta returned 
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #0000FF;">def</span> <span style="color: #006699;">calc_rhotest</span><span style="color: #707183;">(</span>rs_al, rp_al, rs_ls, rp_ls, d, n, phi, lambda_vac<span style="color: #707183;">)</span>:
+    <span style="color: #BA36A5;">beta</span> = <span style="color: #D0372D;">2</span> * np.pi * d * n * np.cos<span style="color: #707183;">(</span>phi<span style="color: #707183;">)</span> / lambda_vac
+    <span style="color: #BA36A5;">rp_L</span> = <span style="color: #707183;">(</span>rp_al + rp_ls * np.exp<span style="color: #7388D6;">(</span>-<span style="color: #D0372D;">2</span>*<span style="color: #D0372D;">1j</span>*beta<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span> / <span style="color: #707183;">(</span><span style="color: #D0372D;">1</span> + rp_al * rp_ls * np.exp<span style="color: #7388D6;">(</span>-<span style="color: #D0372D;">2</span> * <span style="color: #D0372D;">1j</span> * beta<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+    <span style="color: #BA36A5;">rs_L</span> = <span style="color: #707183;">(</span>rs_al + rs_ls * np.exp<span style="color: #7388D6;">(</span>-<span style="color: #D0372D;">2</span>*<span style="color: #D0372D;">1j</span>*beta<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span> / <span style="color: #707183;">(</span><span style="color: #D0372D;">1</span> + rs_al * rs_ls * np.exp<span style="color: #7388D6;">(</span>-<span style="color: #D0372D;">2</span> * <span style="color: #D0372D;">1j</span> * beta<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+    <span style="color: #BA36A5;">rho_L</span> = rp_L / rs_L
+    <span style="color: #0000FF;">return</span> rho_L, beta
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #BA36A5;">rhotest</span>, <span style="color: #BA36A5;">betatest</span> = calc_rhotest<span style="color: #707183;">(</span>rs_altest, rp_altest, rs_lstest, rp_lstest, <span style="color: #D0372D;">300</span>, n_L<span style="color: #7388D6;">[</span><span style="color: #D0372D;">0</span><span style="color: #7388D6;">]</span>, phi_Ltest, lambda_vac<span style="color: #707183;">)</span>
+betatest
+</pre>
+</div>
+<p>
+should be: 2.1558487+0.18312240i
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python">rhotest 
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4d2f7a2" class="outline-2">
+<h2 id="org4d2f7a2"><span class="section-number-2">9</span> <h1 class='org-ref-bib-h1'>Bibliography</h1>
+<ul class='org-ref-bib'><li><a id="fujiwara2009spectroscopic">[fujiwara2009spectroscopic]</a> <a name="fujiwara2009spectroscopic"></a>Fujiwara, Spectroscopic ellipsometry : principles and applications, (2009).</li>
+</ul></h2>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Nikolai Weidt</p>
-<p class="date">Created: 2018-10-17 Mi 17:49</p>
+<p class="date">Created: 2018-10-18 Do 19:06</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
