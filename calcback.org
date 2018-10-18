@@ -22,7 +22,6 @@ The result for 300nm SiO_2 should look like this:
 [[./RefractiveIndexSiO2.png]]
 * List of Todos:
 
-** TODO DELTA IN RADIANS
 ** TODO Write a loop for all wavelengths after it works for one.
 ** TODO Then take even more wavelengths (rows)
 * Imports:
@@ -140,8 +139,8 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 *** Then we call these functions one after another to calculate \rho:
 Get refractive index of the substrate (n_S) and lambda from the csv:
 #+BEGIN_SRC python :results output silent :tangle yes
-  lambda_vac = csv[i, 0]
-  n_S = (csv[i, 3] + 1j * csv[i, 4])
+  lambda_vac = csv[i][0]
+  n_S = (csv[i][3] + 1j * csv[i][4])
 #+END_SRC
 
 Then call the above defined functions
@@ -190,12 +189,12 @@ Then call the above defined functions
   minimum = diff[idx]
   n = n_L[idx]
   print("At lambda = ", lambda_vac)
-  print("The layer has the refractive index n_L = " , n)
+  print("the layer has the refractive index n_L = " , n)
 #+END_SRC
 
 #+RESULTS:
 : At lambda =  300.0
-: The layer has the refractive index n_L =  (1.504+0.10108j)
+: the layer has the refractive index n_L =  (1.504+0.10108j)
 
 * Plot some things for checking results:
 
