@@ -3,7 +3,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-CSVFILE = "head300nmSiO2.csv"  # head = only 10 rows of data
+CSVFILE = "300nmSiO2.csv"  # head300nmSiO2.csv = only 10 rows of data
 phi_i = 70 * np.pi / 180  # converting incident angle from deg (first number) to rad
 d_L = 300  # thickness of layer in nm
 n_air = 1  # refractive index of air
@@ -60,10 +60,3 @@ minimum = diff[idx]
 n = n_L[idx]
 print("At lambda = ", lambda_vac)
 print("the layer has the refractive index n_L = " , n)
-
-def calc_rhotest(rs_al, rp_al, rs_ls, rp_ls, d, n, phi, lambda_vac):
-    beta = 2 * np.pi * d * n * np.cos(phi) / lambda_vac
-    rp_L = (rp_al + rp_ls * np.exp(-2*1j*beta)) / (1 + rp_al * rp_ls * np.exp(-2 * 1j * beta))
-    rs_L = (rs_al + rs_ls * np.exp(-2*1j*beta)) / (1 + rs_al * rs_ls * np.exp(-2 * 1j * beta))
-    rho_L = rp_L / rs_L
-    return rho_L, beta

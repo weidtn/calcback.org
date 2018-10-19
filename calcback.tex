@@ -1,4 +1,4 @@
-% Created 2018-10-18 Do 19:07
+% Created 2018-10-19 Fr 12:11
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -35,25 +35,25 @@
 
 
 \section{What is this?}
-\label{sec:orgeff36cd}
+\label{sec:orga709542}
 This is a script to get the complex refractive index \(n = n * ik\) from the ellipsometric parameters \(\Delta\) and \(\Psi\) I got from a simulation.
 The result for 300nm SiO\(_{\text{2}}\) should look like this:
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{./RefractiveIndexSiO2.png}
-\caption{\label{fig:org424a182}
+\caption{\label{fig:org3bdf1a1}
 Refractive index should look like this}
 \end{figure}
 \section{List of Todos:}
-\label{sec:orgca52e7b}
+\label{sec:org67c34e2}
 
 \subsection{{\bfseries\sffamily TODO} Write a loop for all wavelengths after it works for one.}
-\label{sec:orga6fb8a8}
+\label{sec:orgdd56e6a}
 \subsection{{\bfseries\sffamily TODO} Then take even more wavelengths (rows)}
-\label{sec:org6793dfc}
+\label{sec:org8a64b3d}
 \section{Imports:}
-\label{sec:org8dc8548}
+\label{sec:org3663f70}
 \begin{minted}[]{python}
 import numpy as np
 import matplotlib
@@ -62,11 +62,11 @@ import matplotlib.pyplot as plt
 \end{minted}
 
 \section{Defining some variables:}
-\label{sec:orgbad36ae}
+\label{sec:org12f2044}
 Defining some variables for later use:
 
 \begin{minted}[]{python}
-CSVFILE = "head300nmSiO2.csv"  # head = only 10 rows of data
+CSVFILE = "300nmSiO2.csv"  # head300nmSiO2.csv = only 10 rows of data
 phi_i = 70 * np.pi / 180  # converting incident angle from deg (first number) to rad
 d_L = 300  # thickness of layer in nm
 n_air = 1  # refractive index of air
@@ -76,7 +76,7 @@ i = 0  # only look at one wavelength (row in csv)
 \end{minted}
 
 \section{Read .csv-file:}
-\label{sec:org455b840}
+\label{sec:org1a49448}
 Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,n\(_{\text{S}}\), k\(_{\text{S}}\)],\ldots{}] (Skip columns 3 and 4)
 
 \begin{minted}[]{python}
@@ -89,21 +89,19 @@ csv
 \end{minted}
 
 \begin{verbatim}
-[[300.          55.2217535   84.37228319   2.6726       3.0375    ]
- [303.          50.11187439  93.3085011    2.7346       3.0381    ]
- [306.          46.35824553  98.43681392   2.7967       3.0368    ]
- [309.          43.50539341 101.18051798   2.8588       3.0334    ]
- [312.          41.29392865 102.19236832   2.9206       3.0279    ]
- [315.          39.48751217 101.93002      2.9822       3.0205    ]
- [318.          37.90308303 100.64846104   3.0435       3.0109    ]
- [321.          36.47640803  98.54577151   3.1042       2.9994    ]
- [324.          35.12615859  95.72242205   3.1644       2.9858    ]]
+[[ 300.           55.2217535    84.37228319    2.6726        3.0375    ]
+ [ 303.           50.11187439   93.3085011     2.7346        3.0381    ]
+ [ 306.           46.35824553   98.43681392    2.7967        3.0368    ]
+ ...
+ [2394.           31.06156563  104.46764292    3.4003        0.        ]
+ [2397.           31.02267099  104.44250039    3.4002        0.        ]
+ [2400.           30.98392441  104.41732705    3.4001        0.        ]]
 \end{verbatim}
 
 \section{Calculate \(\rho\)}
-\label{sec:org0d3e8ca}
+\label{sec:orgb711360}
 \subsection{Create a matrix containing every possible refractive index (n+ik):}
-\label{sec:orgcfc3efe}
+\label{sec:org5119763}
 
 Change the last number in the "linspaces" to adjust the resolution.
 
@@ -126,18 +124,18 @@ n_L
 \end{verbatim}
 
 \subsection{Calculate \(\rho\):}
-\label{sec:org9c8511b}
+\label{sec:org30b1f4d}
 \subsubsection{First we define some functions:}
-\label{sec:org9087c96}
+\label{sec:orga7c142b}
 \begin{enumerate}
 \item Snell's Law to calculate the refractive angles:
-\label{sec:orgc9c8d03}
+\label{sec:orgde8c7f0}
 Phi is the incident angle for the layer, n1 and n2 are refractive indices of first and second medium. Returns the angle of refraction.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{./snell.jpg}
-\caption{\label{fig:orga38d5d6}
+\caption{\label{fig:org873c921}
 Snell's Law}
 \end{figure}
 \begin{minted}[]{python}
@@ -149,7 +147,7 @@ def snell(phi, n1, n2):
 
 
 \item Calculate r\(_{\text{p}}\) and r\(_{\text{s}}\) with Fresnel equations:
-\label{sec:orgcfb450c}
+\label{sec:orgcc182af}
 \begin{minted}[]{python}
 def fresnel(n1, phi1, n2, phi2):
     """Takes refractive indices and angles of two layers to calculate the amplitude reflection coefficients"""
@@ -160,7 +158,7 @@ def fresnel(n1, phi1, n2, phi2):
 
 
 \item Calculate \(\rho\) for the layer with eq. 5.2 in Spectroscopic Ellipsometry \citenum{fujiwara2009spectroscopic}:
-\label{sec:org0914871}
+\label{sec:org0685a67}
 \begin{minted}[]{python}
 def calc_rho(rs_al, rp_al, rs_ls, rp_ls, d, n, phi, lambda_vac, returnbeta=False):
     beta = 2 * np.pi * d * n * np.cos(phi) / lambda_vac
@@ -173,7 +171,7 @@ def calc_rho(rs_al, rp_al, rs_ls, rp_ls, d, n, phi, lambda_vac, returnbeta=False
 
 
 \subsubsection{Then we call these functions one after another to calculate \(\rho\):}
-\label{sec:org1a6b621}
+\label{sec:orge5156d4}
 Get refractive index of the substrate (n\(_{\text{S}}\)) and lambda from the csv:
 \begin{minted}[]{python}
 lambda_vac = csv[i][0]
@@ -195,7 +193,7 @@ rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, phi_L, lambda_vac)
 
 
 \subsubsection{Identify the best fitting rho with \(\rho\) = tan(\(\psi\)) * e\(^{\text{i}\Delta}\) :}
-\label{sec:org4d0a82d}
+\label{sec:orgf34e79e}
 
 \begin{minted}[]{python}
 # psi is in our csv-file at index 1, delta at index 2 at row "i" for lambda
@@ -216,11 +214,43 @@ the layer has the refractive index n_L =  (1.504+0.10108j)
 \end{verbatim}
 
 \section{Plot some things for checking results:}
-\label{sec:org95d0a47}
+\label{sec:orgcc8096c}
 
 If we use a high resolution, those plots are not showing much, thats why they are only showing the first 10000 values.
+\subsection{Plot \(\Delta\) \& \(\Psi\):}
+\label{sec:org65e6ce4}
+
+\(\Psi\) in blue, \(\Delta\) in red. Maybe \(\cdot\)(-1)?
+\begin{minted}[]{python}
+fig = plt.figure()
+plt.plot(csv[:,0],csv[:,1], 'b')
+plt.plot(csv[:,0],csv[:,2], 'r') 
+plt.savefig("psidelta.png")
+"psidelta.png"
+\end{minted}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{psidelta.png}
+\end{center}
+
+\subsection{Plot refractive index of substrate n\(_{\text{S}}\):}
+\label{sec:org6110580}
+
+Real part n in blue, imaginary part k in red
+
+\begin{minted}[]{python}
+fig = plt.figure()
+plt.plot(csv[:,0], csv[:,3], 'b')
+plt.plot(csv[:,0], csv[:,4], 'r')
+plt.savefig("ns.png")
+"ns.png"
+\end{minted}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{ns.png}
+\end{center}
 \subsection{Plot real and imaginary part of the created n\(_{\text{L}}\) matrix:}
-\label{sec:orga3522b1}
+\label{sec:org5642da3}
 
 Real part is blue, imaginary is red.
 
@@ -238,7 +268,7 @@ plt.savefig('n_L.png')
 \end{center}
 
 \subsection{Plot real and imaginary part of \(\rho_{\text{L}}\)}
-\label{sec:org16a36a1}
+\label{sec:orga5ea7f5}
 
 \begin{minted}[]{python}
 fig = plt.figure()
@@ -253,7 +283,7 @@ plt.savefig('rho_L.png')
 \end{center}
 
 \subsection{Plot of the difference between \(\rho_{\text{L}}\) and the given \(\rho\) and determined minimum:}
-\label{sec:org60f690a}
+\label{sec:org69d2c73}
 
 The difference is shown in blue, the red lines show the minimum.
 
@@ -271,7 +301,7 @@ plt.savefig('diff.png')
 \end{center}
 
 \subsection{Plot refractive angle phi\(_{\text{L}}\) and n\(_{\text{L}}\):}
-\label{sec:org90ebbe5}
+\label{sec:org1adb925}
 
 n\(_{\text{L}}\) is shown in green, real part of phi\(_{\text{L}}\) in blue, imaginary in red. 
 A relation between these should be visible.
@@ -289,9 +319,8 @@ plt.savefig('phi_L.png')
 \includegraphics[width=.9\linewidth]{phi_L.png}
 \end{center}
 
-
 \section{Testing:}
-\label{sec:orga454f24}
+\label{sec:orgeb01dbb}
 
 Testing with constant n\(_{\text{L}}\), phi\(_{\text{i}}\) at i=0
 \begin{minted}[]{python}
@@ -299,7 +328,7 @@ Testing with constant n\(_{\text{L}}\), phi\(_{\text{i}}\) at i=0
 \end{minted}
 
 \subsection{snell():}
-\label{sec:orgff17aca}
+\label{sec:orge5af11a}
 
 \begin{minted}[]{python}
 phi_Ltest = snell(phi_i, n_air, n_L[0])
@@ -326,7 +355,7 @@ should be: (0.151671-0.175494i)
 
 
 \subsection{fresnel():}
-\label{sec:orgb3471e2}
+\label{sec:orgeed2fac}
 
 rs\(_{\text{al}}\), rp\(_{\text{al}}\) = fresnel(n\(_{\text{air}}\), phi\(_{\text{i}}\), n\(_{\text{L}}\), phi\(_{\text{L}}\))
 
@@ -336,10 +365,22 @@ rs\(_{\text{ls}}\), rp\(_{\text{ls}}\) = fresnel(n\(_{\text{L}}\), phi\(_{\text{
 rs_altest, rp_altest = fresnel(n_air, phi_i, n_L[0], phi_Ltest)
 rs_altest
 \end{minted}
+
+\begin{center}
+\begin{tabular}{l}
+-0.0033999254327574746-0.04239424576449757j\\
+\end{tabular}
+\end{center}
 should be: (-0.003398-0.04239i)
 \begin{minted}[]{python}
 rp_altest
 \end{minted}
+
+\begin{center}
+\begin{tabular}{l}
+-0.0033473348657266995-0.03238064466694647j\\
+\end{tabular}
+\end{center}
 should be: 
 
 \begin{minted}[]{python}
@@ -347,12 +388,24 @@ rs_lstest, rp_lstest = fresnel(n_L[0], phi_Ltest, n_S, phi_Stest)
 rs_lstest
 \end{minted}
 
+\begin{center}
+\begin{tabular}{l}
+-0.8814233130816392-0.10701715470726722j\\
+\end{tabular}
+\end{center}
+
 \begin{minted}[]{python}
 rp_lstest
 \end{minted}
 
+\begin{center}
+\begin{tabular}{l}
+0.1977200465339483+0.4600671830365366j\\
+\end{tabular}
+\end{center}
+
 \subsection{calc\(_{\text{rho}}\)():}
-\label{sec:orge4ecc23}
+\label{sec:orgfddc69f}
 
 rho\(_{\text{L}}\) = calc\(_{\text{rho}}\)(rs\(_{\text{al}}\), rp\(_{\text{al}}\), rs\(_{\text{ls}}\), rp\(_{\text{ls}}\), d\(_{\text{L}}\), n\(_{\text{L}}\), lambda\(_{\text{vac}}\))
  Just copied this from above with beta returned 
@@ -369,12 +422,24 @@ def calc_rhotest(rs_al, rp_al, rs_ls, rp_ls, d, n, phi, lambda_vac):
 rhotest, betatest = calc_rhotest(rs_altest, rp_altest, rs_lstest, rp_lstest, 300, n_L[0], phi_Ltest, lambda_vac)
 betatest
 \end{minted}
+
+\begin{center}
+\begin{tabular}{l}
+2.1558486861854713+0.18312239563626334j\\
+\end{tabular}
+\end{center}
 should be: 2.1558487+0.18312240i
 
 \begin{minted}[]{python}
 rhotest 
 \end{minted}
 
+\begin{center}
+\begin{tabular}{l}
+-0.2562015784819146-0.456331697173584j\\
+\end{tabular}
+\end{center}
+
 \section{\bibliography{forschungspraktikum}}
-\label{sec:org35c7c1f}
+\label{sec:orgd9ba7fd}
 \end{document}
