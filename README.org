@@ -5,9 +5,9 @@
 This is a script to get the complex refractive index $n = n * ik$ from the ellipsometric parameters $\Delta$ and $\Psi$ I got from a simulation.
 
 Here are the files:
-- orgmode: [[file:./calcback.org]]
-- PDF: [[file:./calcback.pdf]]
-- HTML: [[file:./calcback.html]]
+- orgmode: [[file:./calcback.org]] (best to read here on Github)
+- PDF: [[file:./calcback.pdf]] (no syntax-highliting)
+- HTML: [[file:./calcback.html]] (best to read)
 - tangled python: [[file:./calcback.py]]
 
 * List of Todos:
