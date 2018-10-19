@@ -395,4 +395,6 @@ rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac)
  #+RESULTS:
  | -0.2562015784819146-0.456331697173584j |
 
-*  bibliography:forschungspraktikum.bib
+ 
+ 
+bibliography:forschungspraktikum.bib
