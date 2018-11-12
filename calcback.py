@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib
-matplotlib.use('Agg')
+# matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 CSVFILE = "300nmSiO2.csv"  # head300nmSiO2.csv = only 10 rows of data

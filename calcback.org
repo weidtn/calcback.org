@@ -36,20 +36,20 @@ The result for 300nm SiO_2 should look like this:
 Defining some variables for later use:
 
 #+BEGIN_SRC python :results output silent :tangle yes
-  CSVFILE = "300nmSiO2.csv"  # head300nmSiO2.csv = only 10 rows of data
+  CSVFILE = "100nmSiO2.csv"  # head300nmSiO2.csv = only 10 rows of data
   phi_i = 70 * np.pi / 180  # converting incident angle from deg (first number) to rad
-  d_L = 300  # thickness of layer in nm
+  d_L = 100  # thickness of layer in nm
   n_air = 1  # refractive index of air
   rerange = 5  # upper limit for real part
   imrange = 1  # upper limit for imaginary part
-  i = 0  # only look at one wavelength (row in csv)
+  # i = 88  # only look at one wavelength (row in csv)
 #+END_SRC
 
 * Read .csv-file:
 Read the values into a two dimensional numpy array as [[lambda,Psi,Delta,n_S, k_S],...] (Skip columns 3 and 4)
   
 #+BEGIN_SRC python :results output silent :tangle yes
-csv = np.loadtxt(CSVFILE, usecols=(0,1,2,5,6),  delimiter=",", skiprows=1)
+csv = np.loadtxt(CSVFILE, delimiter=",", skiprows=1)
 #+END_SRC
 
 :DEBUG:
@@ -59,13 +59,22 @@ csv
 #+END_SRC
 
 #+RESULTS:
-: [[ 300.           55.2217535    84.37228319    2.6726        3.0375    ]
-:  [ 303.           50.11187439   93.3085011     2.7346        3.0381    ]
-:  [ 306.           46.35824553   98.43681392    2.7967        3.0368    ]
-:  ...
-:  [2394.           31.06156563  104.46764292    3.4003        0.        ]
-:  [2397.           31.02267099  104.44250039    3.4002        0.        ]
-:  [2400.           30.98392441  104.41732705    3.4001        0.        ]]
+
+#+begin_example
+[[ 4.00000000e+02  4.63752956e+01 -8.41522003e+01  5.62650000e+00
+   3.30100000e-01]
+ [ 4.01000000e+02  4.66645899e+01 -8.40149297e+01  5.59460000e+00
+   3.18200000e-01]
+ [ 4.02000000e+02  4.69702190e+01 -8.38513987e+01  5.56370000e+00
+   3.07000000e-01]
+ ...
+ [ 7.98000000e+02  3.32352187e+01  1.00231229e+02  3.69890000e+00
+   4.10000000e-03]
+ [ 7.99000000e+02  3.31871064e+01  1.00206655e+02  3.69810000e+00
+   4.00000000e-03]
+ [ 8.00000000e+02  3.31422918e+01  1.00188647e+02  3.69740000e+00
+   4.00000000e-03]]
+#+end_example
 :END:
 
 * Calculate \rho
@@ -76,9 +85,10 @@ Change the last number in the "linspaces" to adjust the resolution.
 #+BEGIN_SRC python :results silent :tangle yes
   lsp_re = np.linspace(1, rerange, 1001)
   lsp_im = np.linspace(0.01, imrange, 1001)
-  re, im = np.meshgrid (lsp_re, lsp_im, copy=False)
-  n_L = 1j * np.round(im,6) + np.round(re,6)
-  n_L = n_L.flatten() # create onedimensional array
+  # re, im = np.meshgrid (lsp_re, lsp_im, copy=False)
+  # n_L = 1j * np.round(im,6) + np.round(re,6)
+  # n_L = n_L.flatten() # create onedimensional array
+  n_L = lsp_re
 #+END_SRC
 
 :DEBUG:
@@ -88,8 +98,7 @@ This gives the following matrix:
 #+END_SRC
 
 #+RESULTS:
-: [1.   +0.01j 1.004+0.01j 1.008+0.01j ... 4.992+1.j   4.996+1.j
-:  5.   +1.j  ]
+: [1.    1.004 1.008 ... 4.992 4.996 5.   ]
 
 :END:
 
@@ -124,14 +133,27 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
 
 
 **** Calculate \rho for the layer with eq. 5.2 in Spectroscopic Ellipsometry citenum:fujiwara2009spectroscopic:
-#+BEGIN_SRC python :results silent :tangle yes
-  def calc_rho(rs_al, rp_al, rs_ls, rp_ls, d, n, phi, lambda_vac, returnbeta=False):
-      beta = 2 * np.pi * d * n * np.cos(phi) / lambda_vac
-      rp_L = (rp_al + rp_ls * np.exp(-2*1j*beta)) / (1 + rp_al * rp_ls * np.exp(-2 * 1j * beta))
-      rs_L = (rs_al + rs_ls * np.exp(-2*1j*beta)) / (1 + rs_al * rs_ls * np.exp(-2 * 1j * beta))
+#+BEGIN_SRC python :results output :tangle yes
+  def calc_diff(n_L, rho_giv):
+      #Snell's Law:
+      phi_L = snell(phi_i, n_air, n_L)
+      phi_S = snell(phi_L, n_L, n_S)
+      # Fresnel equations:
+      # air/layer:
+      rs_al, rp_al = fresnel(n_air, phi_i, n_L, phi_L)
+      # layer/substrate:
+      rs_ls, rp_ls = fresnel(n_L, phi_L, n_S, phi_S)
+
+      beta = (2 * np.pi / lambda_vac) * d_L * n_L * np.cos(phi_L)
+      rp_L = (rp_al + rp_ls * np.exp(-2 * 1j * beta)) / (
+          1 + rp_al * rp_ls * np.exp(-2 * 1j * beta))
+      rs_L = (rs_al + rs_ls * np.exp(-2 * 1j * beta)) / (
+          1 + rs_al * rs_ls * np.exp(-2 * 1j * beta))
       rho_L = rp_L / rs_L
-      return rho_L
+      return abs(rho_giv - rho_L)
 #+END_SRC
+
+#+RESULTS:
 
 
 *** Then we call these functions one after another to calculate \rho:
@@ -139,19 +161,6 @@ Get refractive index of the substrate (n_S) and lambda from the csv:
 #+BEGIN_SRC python :results output silent :tangle yes
   lambda_vac = csv[i][0]
   n_S = (csv[i][3] + 1j * csv[i][4])
-#+END_SRC
-
-Then call the above defined functions
-#+BEGIN_SRC python :results output :tangle yes
-  phi_L = snell(phi_i, n_air, n_L)
-  phi_S = snell(phi_L, n_L, n_S)
-  # Fresnel equations:
-  # air/layer:
-  rs_al, rp_al = fresnel(n_air, phi_i, n_L, phi_L)
-  # layer/substrate:
-  rs_ls, rp_ls = fresnel(n_L, phi_L, n_S, phi_S)
-
-  rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, phi_L, lambda_vac)
 #+END_SRC
 
 #+RESULTS:
@@ -165,12 +174,12 @@ Then call the above defined functions
   # rp_al
   # rs_ls
   # rp_ls
-  type(rho_L)
+  # rho_L
   # csv[:,0] # list of lambdas
+  # n_S
 #+END_SRC
 
 #+RESULTS:
-: <class 'numpy.ndarray'>
 
 :END:
 
@@ -179,37 +188,88 @@ Then call the above defined functions
 
 #+BEGIN_SRC python :results output :exports both :tangle yes
   # psi is in our csv-file at index 1, delta at index 2 at row "i" for lambda
-  psi = csv[i][1] * (np.pi/180)
-  delta = csv[i][2] * (np.pi/180)
-  rho_giv = np.tan(psi) * np.exp(1j * delta)
-  diff = abs(rho_giv - rho_L)  # magnitude of complex number
-  idx = np.argmin(diff)  # index of the minimum
-  minimum = diff[idx]
-  n = n_L[idx]
-  print("At lambda = ", lambda_vac)
-  print("the layer has the refractive index n_L = " , n)
+  n_array = [] 
+  for i, row in enumerate(csv):
+      lambda_vac = csv[i][0]
+      psi = csv[i][1] * (np.pi/180)
+      delta = csv[i][2] * (np.pi/180)
+      n_S = csv[i][3] + csv[i][4] * 1j
+      rho_giv = np.tan(psi) * np.exp(1j * delta)
+      diff = calc_diff(n_L, rho_giv)
+      idx = np.argmin(diff)  # index of the minimum
+      minimum = min(diff)
+      n_array = np.append(n_array, n_L[idx])
+
+  # print("At lambda = ", lambda_vac)
+  # print("the layer has the refractive index n_L = " , n_array)
+  # print("minimum = ", minimum)
 #+END_SRC
 
 #+RESULTS:
-: At lambda =  300.0
-: the layer has the refractive index n_L =  (1.504+0.10108j)
+#+begin_example
+the layer has the refractive index n_L =  [1.564 1.564 1.564 1.564 1.564 1.564 1.564 1.564 1.564 1.564 1.564 1.564
+ 1.564 1.564 1.564 1.564 1.564 1.564 1.564 1.564 1.564 1.564 1.564 1.564
+ 1.564 1.564 1.568 1.568 1.568 1.568 1.568 1.568 1.568 1.568 1.568 1.568
+ 1.568 1.568 1.568 1.568 1.568 1.568 1.568 1.568 1.568 1.568 1.572 1.572
+ 1.572 1.572 1.572 1.572 1.572 1.572 1.572 1.572 1.572 1.572 1.572 1.572
+ 1.576 1.576 1.576 1.576 1.576 1.576 1.576 1.58  1.58  1.58  1.58  1.584
+ 1.584 1.584 1.588 1.588 1.592 1.592 1.596 1.6   1.604 1.608 1.616 1.624
+ 1.636 1.652 1.672 1.692 1.72  1.328 1.356 1.384 1.42  1.448 1.468 1.484
+ 1.496 1.5   1.508 1.512 1.516 1.516 1.52  1.52  1.524 1.524 1.524 1.524
+ 1.524 1.528 1.528 1.528 1.528 1.528 1.528 1.528 1.528 1.528 1.528 1.528
+ 1.524 1.524 1.524 1.524 1.524 1.524 1.524 1.524 1.524 1.524 1.52  1.52
+ 1.52  1.52  1.52  1.52  1.52  1.516 1.516 1.516 1.516 1.516 1.516 1.512
+ 1.512 1.512 1.512 1.512 1.508 1.508 1.508 1.508 1.508 1.504 1.504 1.504
+ 1.504 1.5   1.5   1.5   1.5   1.5   1.496 1.496 1.496 1.496 1.492 1.492
+ 1.492 1.488 1.488 1.488 1.488 1.484 1.484 1.484 1.48  1.48  1.48  1.48
+ 1.476 1.476 1.476 1.472 1.472 1.472 1.468 1.468 1.468 1.464 1.464 1.464
+ 1.46  1.46  1.456 1.456 1.456 1.452 1.452 1.452 1.448 1.448 1.444 1.444
+ 1.444 1.44  1.44  1.44  1.436 1.436 1.432 1.432 1.432 1.428 1.428 1.424
+ 1.424 1.424 1.42  1.42  1.416 1.416 1.416 1.412 1.412 1.408 1.408 1.408
+ 1.404 1.404 1.404 1.4   1.4   1.396 1.396 1.396 1.392 1.392 1.392 1.388
+ 1.388 1.388 1.384 1.384 1.384 1.38  1.38  1.38  1.38  1.376 1.376 1.376
+ 1.372 1.372 1.372 1.372 1.368 1.368 1.368 1.368 1.364 1.364 1.364 1.364
+ 1.36  1.36  1.36  1.36  1.36  1.356 1.356 1.356 1.356 1.356 1.352 1.352
+ 1.352 1.352 1.352 1.352 1.348 1.348 1.348 1.348 1.348 1.348 1.348 1.344
+ 1.344 1.344 1.344 1.344 1.344 1.344 1.344 1.34  1.34  1.34  1.34  1.34
+ 1.34  1.34  1.34  1.34  1.336 1.336 1.336 1.336 1.336 1.336 1.336 1.336
+ 1.336 1.336 1.336 1.336 1.332 1.332 1.332 1.332 1.332 1.332 1.332 1.332
+ 1.332 1.332 1.332 1.332 1.332 1.332 1.332 1.332 1.332 1.332 1.332 1.328
+ 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328
+ 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328
+ 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328
+ 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328
+ 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328 1.328
+ 1.328 1.328 1.328 1.328 1.328]
+#+end_example
 
 * Plot some things for checking results:
 
 If we use a high resolution, those plots are not showing much, thats why they are only showing the first 10000 values.
 ** Plot \Delta & \Psi:
 
-\Psi in blue, \Delta in red. Maybe \cdot(-1)?
-#+BEGIN_SRC python :exports both :results file
+\Psi in blue, \Delta in red.
+#+BEGIN_SRC python :exports results :results file
   fig = plt.figure()
   plt.plot(csv[:,0],csv[:,1], 'b')
-  plt.plot(csv[:,0],csv[:,2], 'r') 
-  plt.savefig("psidelta.png")
-  "psidelta.png"
+  plt.ylabel("Psi")
+  plt.savefig("psi.png")
+  "psi.png"
 #+END_SRC
 
 #+RESULTS:
-[[file:psidelta.png]]
+[[file:psi.png]]
+#+BEGIN_SRC python :results file :exports results
+  fig = plt.figure()
+  plt.plot(csv[:,0],csv[:,2], 'r')
+  plt.ylabel("Delta")
+  plt.savefig("delta.png")
+  "delta.png"
+#+END_SRC
+
+#+RESULTS:
+[[file:delta.png]]
+
 
 ** Plot refractive index of substrate n_S:
 
@@ -219,6 +279,8 @@ Real part n in blue, imaginary part k in red
   fig = plt.figure()
   plt.plot(csv[:,0], csv[:,3], 'b')
   plt.plot(csv[:,0], csv[:,4], 'r')
+  plt.xlabel("wavelength")
+  plt.ylabel("refractive index of substrate")
   plt.savefig("ns.png")
   "ns.png"
 #+END_SRC
@@ -235,24 +297,10 @@ Real part is blue, imaginary is red.
   plt.plot(np.imag(n_L[:10000]), c="r")
   plt.savefig('n_L.png')
   './n_L.png'
-
 #+END_SRC
 
 #+RESULTS:
 [[file:./n_L.png]]
-
-** Plot real and imaginary part of \rho_L
-
-#+BEGIN_SRC python :results file :tangle no :exports both 
-  fig = plt.figure()
-  plt.plot(np.real(rho_L), c='b')
-  plt.plot(np.imag(rho_L), c='r')
-  plt.savefig('rho_L.png')
-  "./rho_L.png"
-#+END_SRC
-
-#+RESULTS:
-[[file:./rho_L.png]]
 
 ** Plot of the difference between \rho_L and the given \rho and determined minimum:
 
@@ -262,7 +310,9 @@ The difference is shown in blue, the red lines show the minimum.
   fig = plt.figure()
   plt.axvline(idx, c='r')
   plt.axhline(minimum, c='r')
-  plt.plot(diff[:idx+10000])
+  plt.plot(diff)
+  plt.xlabel("index")
+  plt.ylabel("difference of rhos")
   plt.savefig('diff.png')
   "./diff.png"
 #+END_SRC
@@ -277,9 +327,9 @@ A relation between these should be visible.
 
 #+BEGIN_SRC python :results file :tangle no :exports both 
   fig = plt.figure()
-  plt.plot(np.real(phi_L[:5000]), 'b')
-  plt.plot(np.imag(phi_L[:5000]), 'r')
-  plt.plot(np.real(n_L[:5000]), c='g')
+  plt.plot(np.real(snell(phi_i, n_air, n_L)[:3000]), 'b')
+  plt.plot(np.imag(snell(phi_i, n_air, n_L)[:3000]), 'r')
+  plt.plot(np.real(n_L)[:3000], c='g')
   plt.savefig('phi_L.png')
   "phi_L.png"
 #+END_SRC
@@ -287,6 +337,43 @@ A relation between these should be visible.
 #+RESULTS:
 [[file:phi_L.png]]
 
+
+** Plot \rho_given - \rho_L
+
+Red line shows the found refractive index at the minimum 
+
+#+BEGIN_SRC python :results file :exports both
+  fig = plt.figure()
+  rho_grid = calc_diff(n_L, rho_giv)
+  # plt.imshow(rho_grid,origin='lower',extent=(n.min(),n.max(),k.min(),k.max()),
+             # aspect = (n.max()-n.min())/(k.max()-k.min()))
+  # plt.colorbar()
+  plt.axvline(n_L[idx], c='r')
+  plt.xlabel('refractive index')
+  plt.ylabel('abs(rho_given - rho-l)')
+  plt.axvline(n_array, color="r")
+  plt.plot(n_L, rho_grid)
+  # plt.show()
+  plt.savefig('minimumplot.png') 
+  "minimumplot.png"
+#+END_SRC
+
+#+RESULTS:
+[[file:minimumplot.png]]
+
+** Plot n
+
+#+BEGIN_SRC python :results file :tangle no :exports both
+  fig = plt.figure()
+  plt.xlabel("wavelenght")
+  plt.ylabel("refractive index")
+  plt.plot(csv[:,0], n_array, 'b')
+  plt.savefig('index.png') 
+  "index.png"
+#+END_SRC
+
+#+RESULTS:
+[[file:index.png]]
 * Testing: 
 
 Testing with constant n_L, phi_i at i=0
@@ -295,7 +382,7 @@ Testing with constant n_L, phi_i at i=0
   #+END_SRC
 
   #+RESULTS:
-  | n_L[0] |          (1+0.01j) |
+  | n_L[0] |                1.0 |
   | phi_i  | 1.2217304763960306 |
 
 ** snell():
@@ -306,7 +393,7 @@ Testing with constant n_L, phi_i at i=0
 #+END_SRC
 
 #+RESULTS:
-| 1.2204293562148987-0.02737077533152331j |
+: 1.2217304763960306
 should be: (1.220429-0.02737074 i)
 
 #+BEGIN_SRC python :export both
@@ -314,7 +401,7 @@ should be: (1.220429-0.02737074 i)
 #+END_SRC
 
 #+RESULTS:
-| n_S | (2.6726+3.0375j) |
+| n_S | (3.6974+0.004j) |
 
 #+BEGIN_SRC python :exports both :results value
   phi_Stest = snell(1.220429-0.0273775j,n_L[0],n_S)
@@ -322,7 +409,7 @@ should be: (1.220429-0.02737074 i)
 #+END_SRC
 
 #+RESULTS:
-| 0.15167146706201226-0.1754944190504326j |
+| 0.25693777375213495-0.0029123892267902147j |
 should be: (0.151671-0.175494i)
 
   
@@ -341,14 +428,14 @@ should be: (0.151671-0.175494i)
 #+END_SRC
 
 #+RESULTS:
-| -0.0033999254327574746-0.04239424576449757j |
+: 0.0
 should be: (-0.003398-0.04239i)
 #+BEGIN_SRC python :exports both :results value
 rp_altest
 #+END_SRC
 
 #+RESULTS:
-| -0.0033473348657266995-0.03238064466694647j |
+: 0.0
 should be: 
 
 #+BEGIN_SRC python :exports both :results value
@@ -357,14 +444,14 @@ should be:
 #+END_SRC
 
 #+RESULTS:
-| -0.8814233130816392-0.10701715470726722j |
+| -0.8254138705368641-0.00029432103501708976j |
 
 #+BEGIN_SRC python :exports both
 rp_lstest
 #+END_SRC
 
 #+RESULTS:
-| 0.1977200465339483+0.4600671830365366j |
+| 0.13326188486753962+0.0001555019055111361j |
 
 ** calc_rho():
 
@@ -385,7 +472,7 @@ rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac)
   #+END_SRC
 
   #+RESULTS:
-  | 2.1558486861854713+0.18312239563626334j |
+  : 0.805865977238737
   should be: 2.1558487+0.18312240i
   
  #+BEGIN_SRC python :exports both :results value
@@ -393,7 +480,7 @@ rho_L = calc_rho(rs_al, rp_al, rs_ls, rp_ls, d_L, n_L, lambda_vac)
  #+END_SRC 
 
  #+RESULTS:
- | -0.2562015784819146-0.456331697173584j |
+ | -0.16144861157373563-0.00013082428937188695j |
 
  
  
