@@ -75,23 +75,6 @@ csv
    4.00000000e-03]]
 #+end_example
 
-#+begin_example
-[[ 4.00000000e+02  4.63752956e+01 -8.41522003e+01  5.62650000e+00
-   3.30100000e-01]
- [ 4.01000000e+02  4.66645899e+01 -8.40149297e+01  5.59460000e+00
-   3.18200000e-01]
- [ 4.02000000e+02  4.69702190e+01 -8.38513987e+01  5.56370000e+00
-   3.07000000e-01]
- ...
- [ 7.98000000e+02  3.32352187e+01  1.00231229e+02  3.69890000e+00
-   4.10000000e-03]
- [ 7.99000000e+02  3.31871064e+01  1.00206655e+02  3.69810000e+00
-   4.00000000e-03]
- [ 8.00000000e+02  3.31422918e+01  1.00188647e+02  3.69740000e+00
-   4.00000000e-03]]
-#+end_example
-:END:
-
 * Calculate \rho
 ** Create a matrix containing every possible refractive index (n+ik):
 
@@ -165,7 +148,7 @@ Phi is the incident angle for the layer, n1 and n2 are refractive indices of fir
       rs_L = (rs_al + rs_ls * np.exp(-2 * 1j * beta)) / (
           1 + rs_al * rs_ls * np.exp(-2 * 1j * beta))
       rho_L = rp_L / rs_L
-      return abs(rho_giv - rho_L)
+      return abs(rho_giv - rho_L), rho_L
 #+END_SRC
 
 #+RESULTS:
@@ -204,17 +187,20 @@ Get refractive index of the substrate (n_S) and lambda from the csv:
 #+BEGIN_SRC python :results output :exports both :tangle yes
   # psi is in our csv-file at index 1, delta at index 2 at row "i" for lambda
   n_array = [] 
+  rho_array = []
   for i, row in enumerate(csv):
       lambda_vac = csv[i][0]
       psi = csv[i][1] * (np.pi/180)
       delta = csv[i][2] * (np.pi/180)
       n_S = csv[i][3] + csv[i][4] * 1j
       rho_giv = np.tan(psi) * np.exp(1j * delta)
-      diff = calc_diff(n_L, rho_giv)
+      diff, rho_L = calc_diff(n_L, rho_giv)
       idx = np.argmin(diff)  # index of the minimum
       minimum = min(diff)
       n_array = np.append(n_array, n_L[idx])
-
+      rho_array = np.append(rho_array, rho_L[idx])
+  psi_L = np.arctan(abs(rho_array)) * 180/np.pi
+  delta_L = np.angle(rho_array) * 180/np.pi
   # print("the layer has the refractive index n_L = " , n_array)
 #+END_SRC
 
@@ -225,21 +211,26 @@ Get refractive index of the substrate (n_S) and lambda from the csv:
 If we use a high resolution, those plots are not showing much, thats why they are only showing the first 10000 values.
 ** Plot \Delta & \Psi:
 
-\Psi in blue, \Delta in red.
-#+BEGIN_SRC python :exports results :results file
+\Psi from input in blue, \Psi_L in red.
+#+BEGIN_SRC python :exports both :results file
   fig = plt.figure()
   plt.plot(csv[:,0],csv[:,1], 'b')
+  plt.plot(csv[:,0],psi_L, 'r')
   plt.ylabel("Psi")
+  plt.xlabel("Wavelenght (nm)")
   plt.savefig("psi.png")
   "psi.png"
 #+END_SRC
 
 #+RESULTS:
 [[file:psi.png]]
-#+BEGIN_SRC python :results file :exports results
+
+#+BEGIN_SRC python :exports both :results file
   fig = plt.figure()
-  plt.plot(csv[:,0],csv[:,2], 'r')
+  plt.plot(csv[:,0],csv[:,2], 'b')
+  plt.plot(csv[:,0],delta_L, 'r')
   plt.ylabel("Delta")
+  plt.xlabel("Wavelenght (nm)")
   plt.savefig("delta.png")
   "delta.png"
 #+END_SRC
