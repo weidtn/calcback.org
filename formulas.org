@@ -1,0 +1,44 @@
+#+Title: Formulas
+#+OPTIONS: tex:t author:nil date:nil
+#+OPTIONS: toc:nil
+* Snell's Law:
+\[
+\Phi_L = \arcsin( \frac{\sin(\Phi_i) \cdot n_{air}}{n_L} )
+\]
+
+\[
+\Phi_S = \arcsin( \frac{\sin(\Phi_L) \cdot n_L}{n_S} )
+\]
+* Fresnel Equation:
+** air/layer:
+\[
+r_{s,al} = \frac{n_{air} \cdot \cos(\phi_i) - n_L \cdot \cos(\phi_L)}{n_{}_{air} \cdot \cos(\phi_i) + n_L \cdot \cos(\phi_L)}
+\]
+
+\[
+r_{p,al} = \frac{n_L_{} \cdot \cos(\phi_i) - n_{air} \cdot \cos(\phi_L)}{n_{}_{}_L \cdot \cos(\phi_i) + n_{air} \cdot \cos(\phi_L)}
+\]
+
+** layer/substrate:
+
+\[
+r_{s,ls} = \frac{n_{L} \cdot \cos(\phi_L) - n_S \cdot \cos(\phi_S)}{n_L_{}_{} \cdot \cos(\phi_L) + n_S \cdot \cos(\phi_S)}
+\]
+
+\[
+r_{p,ls} = \frac{n_S_{} \cdot \cos(\phi_L) - n_L_{} \cdot \cos(\phi_S)}{n_{}_{}_S \cdot \cos(\phi_L) + n_L_{} \cdot \cos(\phi_S)}
+\]
+
+* Fujiwara ellipsometer
+\[
+\beta = \frac{2\pi \cdot d}{\lambda} \cdot N_L \cdot \cos(\phi_L)
+\]
+
+\[
+\rho = \frac{r_p}{r_s} = \frac{r_{p,al} + r_{p,ls} \cdot e^{-2i\beta}}{1 + r_{p,al} \cdot r_{p,ls} \cdot e^{-2i\beta}} \cdot \frac{1 + r_{s,al } \cdot r_{s,ls} \cdot e^{-2i\beta}}{r_{s,al} + r_{s,ls} \cdot e^{-2i\beta}} 
+\]
+(Kehrwert zweiter Bruch = r_s)
+
+\[
+\rho = \tan(\Psi) \cdot e^{i\Delta}
+\]
